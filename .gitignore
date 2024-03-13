@@ -1,6 +1,6 @@
 # Blazor Output Directories
-/nabegemu/nabegemu/bin/
-/nabegemu/nabegemu/obj/
+/nabegemu/bin/
+/nabegemu/obj/
 
 
 # Visual Studio files
