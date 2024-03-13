@@ -1,0 +1,29 @@
+# Blazor Output Directories
+/nabegemu/nabegemu/bin/
+/nabegemu/nabegemu/obj/
+
+
+# Visual Studio files
+.vscode/
+*.suo
+*.sln
+*.user
+*.userprefs
+*.lock.json
+*.vs/
+*.bak
+*.cache
+
+# Rider files
+.idea/
+
+# Compiled Files
+*.dll
+*.exe
+*.pdb
+*.log
+*.zip
+
+# OS-generated files
+.DS_Store
+Thumbs.db
