@@ -1,4 +1,7 @@
 ﻿@page "/"
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
+@implements IAsyncDisposable
 
 <PageTitle>Home</PageTitle>
 
@@ -14,12 +17,12 @@
 <br />
 
 <div class="flex justify-content--center flex-direction--column">
-
-    <label for="JoinGameCode">Get cooking with a game code:</label>
-    <div class="input-group mb-3">        
-        <input type="text" id="JoinGameCode" class="form-control" placeholder="E.g. 0123" aria-label="Join a game code" aria-describedby="join-game-code-input">
+    <label for="Join-Game-Code">Get cooking with your name and a game code:</label>
+    <div class="input-group mb-3">
+        <input type="text" id="Player-Name" class="form-control" placeholder="Name" @bind="playerName" aria-label="Player Name" aria-describedby="player-name-input">
+        <input type="text" id="Join-Game-Code" class="form-control" placeholder="Game code" @bind="joinGameCode" aria-label="Join a game code" aria-describedby="join-game-code-input">
         <div class="input-group-append">
-            <button class="btn btn-success" type="button">Button</button>
+            <button class="btn btn-success" @onclick="AddPlayer">Go!</button>
         </div>
     </div>
 
@@ -28,3 +31,37 @@
         <button class="btn btn-sm btn-link" type="button">Click here!</button>
     </div>
 </div>
+
+@code {
+    private HubConnection? hubConnection;
+    private string? playerName;
+    private string? joinGameCode;
+
+    public bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(Navigation.ToAbsoluteUri("/lobbyhub"))
+            .Build();
+
+        await hubConnection.StartAsync();
+    }
+
+    private async Task AddPlayer()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("AddNewPlayer", playerName, joinGameCode);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}

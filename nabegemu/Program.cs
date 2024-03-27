@@ -1,4 +1,5 @@
 using nabegemu.Components;
+using nabegemu.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,5 +24,7 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+app.MapHub<LobbyHub>("/lobbyhub");
 
 app.Run();
