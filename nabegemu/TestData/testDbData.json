@@ -1,0 +1,29 @@
+{
+    "gameId": 1234,
+    "players": [
+        {
+            "id": 1,
+            "name": "Meg",
+            "code": 1234,
+            "score": 0
+        },
+        {
+            "id": 2,
+            "name": "Chris",
+            "code": 1234,
+            "score": 0
+        },
+        {
+            "id": 3,
+            "name": "Suz",
+            "code": 1234,
+            "score": 0
+        },
+        {
+            "id": 4,
+            "name": "Tom",
+            "code": 1234,
+            "score": 0
+        }
+    ]
+}
