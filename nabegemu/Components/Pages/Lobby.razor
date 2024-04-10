@@ -4,28 +4,49 @@
 @implements IAsyncDisposable
 
 <h3>Game Lobby</h3>
-<p>Hiring cooks...</p>
 
-<ul>
-    @foreach (var playerName in playerNames)
-    {
-        <li>@playerName</li>
-    }
-</ul>
+@if (requiredPlayersMet)
+{
+    <p>Loading game...</p>
+
+    <ul>
+        @foreach (var playerName in playerNames)
+        {
+            <li>Chef @playerName</li>
+        }
+    </ul>
+}
+else
+{
+    <p>Hiring cooks...</p>
+
+    <ul>
+        @foreach (var playerName in playerNames)
+        {
+            <li>@playerName</li>
+        }
+    </ul>
+}
 
 @code {
     private HubConnection? hubConnection;
     private List<string> playerNames = new List<string>();
+    private bool requiredPlayersMet = false;
 
     protected override async Task OnInitializedAsync()
     {
         hubConnection = new HubConnectionBuilder()
-            .WithUrl(Navigation.ToAbsoluteUri("/lobbyhub"))
-            .Build();
+        .WithUrl(Navigation.ToAbsoluteUri("/lobbyhub"))
+        .Build();
 
         hubConnection.On<string>("NewPlayerAdded", (playerName) =>
         {
-            playerNames.Add(playerName);
+            playerNames.Add(playerName);            
+
+            if (playerNames.Count == 4)
+            {
+                requiredPlayersMet = true;
+            }
 
             InvokeAsync(StateHasChanged);
         });
