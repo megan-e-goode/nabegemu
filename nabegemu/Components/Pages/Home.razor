@@ -28,7 +28,8 @@
 
     <div class="flex justify-content--center flex-direction--column text-center">
         <small>Want to start a new game?</small>
-        <button class="btn btn-sm btn-link" type="button">Click here!</button>
+        <input type="text" id="Player-Name" class="form-control" placeholder="Name" @bind="playerName" aria-label="Player Name" aria-describedby="player-name-input">
+        <button class="btn btn-sm btn-link" type="button" @onclick="CreateGame">Click here!</button>
     </div>
 </div>
 
@@ -54,6 +55,18 @@
         if (hubConnection is not null)
         {
             await hubConnection.SendAsync("AddNewPlayer", playerName, joinGameCode);
+
+            Navigation.NavigateTo("/Lobby");
+        }
+    }
+
+    private async Task CreateGame()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("CreateNewGame", playerName);
+
+            Navigation.NavigateTo("/Lobby");
         }
     }
 
