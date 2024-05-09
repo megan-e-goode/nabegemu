@@ -19,7 +19,7 @@
 <div class="flex justify-content--center flex-direction--column">
     <label for="Join-Game-Code">Get cooking with your name and a game code:</label>
     <div class="input-group mb-3">
-        <input type="text" id="Player-Name" class="form-control" placeholder="Name" @bind="playerName" aria-label="Player Name" aria-describedby="player-name-input">
+        <input type="text" id="Player-Name" class="form-control" placeholder="Name" @bind="addPlayerName" aria-label="Player Name" aria-describedby="player-name-input">
         <input type="text" id="Join-Game-Code" class="form-control" placeholder="Game code" @bind="joinGameCode" aria-label="Join a game code" aria-describedby="join-game-code-input">
         <div class="input-group-append">
             <button class="btn btn-success" @onclick="AddPlayer">Go!</button>
@@ -28,14 +28,15 @@
 
     <div class="flex justify-content--center flex-direction--column text-center">
         <small>Want to start a new game?</small>
-        <input type="text" id="Player-Name" class="form-control" placeholder="Name" @bind="playerName" aria-label="Player Name" aria-describedby="player-name-input">
+        <input type="text" id="Player-Name" class="form-control" placeholder="Name" @bind="createGamePlayerName" aria-label="Player Name" aria-describedby="player-name-input">
         <button class="btn btn-sm btn-link" type="button" @onclick="CreateGame">Click here!</button>
     </div>
 </div>
 
 @code {
     private HubConnection? hubConnection;
-    private string? playerName;
+    private string? addPlayerName;
+    private string? createGamePlayerName;
     private string? joinGameCode;
 
     public bool IsConnected =>
@@ -52,9 +53,11 @@
 
     private async Task AddPlayer()
     {
+        var test = hubConnection?.State;
+
         if (hubConnection is not null)
         {
-            await hubConnection.SendAsync("AddNewPlayer", playerName, joinGameCode);
+            await hubConnection.SendAsync("AddNewPlayer", addPlayerName, joinGameCode);
 
             Navigation.NavigateTo("/Lobby");
         }
@@ -64,7 +67,7 @@
     {
         if (hubConnection is not null)
         {
-            await hubConnection.SendAsync("CreateNewGame", playerName);
+            await hubConnection.SendAsync("CreateNewGame", createGamePlayerName);
 
             Navigation.NavigateTo("/Lobby");
         }

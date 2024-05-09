@@ -42,13 +42,13 @@ else
         .Build();
 
         hubConnection.On<Game>("NewPlayerAdded", (game) =>
-        {      
+        {
             gameCode = game.GameId;
 
             foreach(var player in game.Players)
             {
                 playerNames.Add(player.Name);
-            }            
+            }
 
             if (playerNames.Count == 4)
             {
@@ -60,7 +60,7 @@ else
         });
 
         hubConnection.On<Game>("NewGameCreated", (game) =>
-        {            
+        {
             gameCode = game.Players[0].Code;
 
             playerNames.Add(game.Players[0].Name);
