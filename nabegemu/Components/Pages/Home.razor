@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using nabegemu.Database.Models
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
 @implements IAsyncDisposable
@@ -10,7 +11,8 @@
     <h2>The Hot Pot Game!</h2>
 </div>
 
-<div class="flex justify-content--center">
+@if (!sessionCreated) {
+    <div class="flex justify-content--center">
     <img src="/images/hot-pot-cute-logo-1.jpeg" class="image--main" />
 </div>
 
@@ -19,7 +21,7 @@
 <div class="flex justify-content--center flex-direction--column">
     <label for="Join-Game-Code">Get cooking with your name and a game code:</label>
     <div class="input-group mb-3">
-        <input type="text" id="Player-Name" class="form-control" placeholder="Name" @bind="playerName" aria-label="Player Name" aria-describedby="player-name-input">
+        <input type="text" id="Player-Name" class="form-control" placeholder="Name" @bind="addPlayerName" aria-label="Player Name" aria-describedby="player-name-input">
         <input type="text" id="Join-Game-Code" class="form-control" placeholder="Game code" @bind="joinGameCode" aria-label="Join a game code" aria-describedby="join-game-code-input">
         <div class="input-group-append">
             <button class="btn btn-success" @onclick="AddPlayer">Go!</button>
@@ -28,14 +30,48 @@
 
     <div class="flex justify-content--center flex-direction--column text-center">
         <small>Want to start a new game?</small>
-        <button class="btn btn-sm btn-link" type="button">Click here!</button>
+        <input type="text" id="Player-Name" class="form-control" placeholder="Name" @bind="createGamePlayerName" aria-label="Player Name" aria-describedby="player-name-input">
+        <button class="btn btn-sm btn-link" type="button" @onclick="CreateGame">Click here!</button>
     </div>
 </div>
+}
+
+@if (sessionCreated) {
+    <h3>Game Lobby: @gameCode</h3>
+
+    @if (requiredPlayersMet)
+    {
+        <p>Loading game...</p>
+
+        <ul>
+            @foreach (var playerName in playerNames)
+            {
+                <li>Chef @playerName</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>Hiring cooks...</p>
+
+        <ul>
+            @foreach (var playerName in playerNames)
+            {
+                <li>@playerName</li>
+            }
+        </ul>
+    }
+}
 
 @code {
     private HubConnection? hubConnection;
-    private string? playerName;
+    private string? addPlayerName;
+    private string? createGamePlayerName;
     private string? joinGameCode;
+    private List<string> playerNames = new List<string>();
+    private bool requiredPlayersMet = false;
+    private bool sessionCreated = false;
+    private int? gameCode;
 
     public bool IsConnected =>
         hubConnection?.State == HubConnectionState.Connected;
@@ -46,14 +82,54 @@
             .WithUrl(Navigation.ToAbsoluteUri("/lobbyhub"))
             .Build();
 
+        hubConnection.On<Game>("NewPlayerAdded", (game) =>
+        {
+            gameCode = game.GameId;
+            sessionCreated = true;
+
+            foreach (var player in game.Players)
+            {
+                playerNames.Add(player.Name);
+            }
+
+            if (playerNames.Count == 4)
+            {
+                requiredPlayersMet = true;
+            }
+
+            InvokeAsync(StateHasChanged);
+            playerNames = new List<string>();
+        });
+
+        hubConnection.On<Game>("NewGameCreated", (game) =>
+        {
+            gameCode = game.Players[0].Code;
+            sessionCreated = true;
+
+            playerNames.Add(game.Players[0].Name);
+
+            InvokeAsync(StateHasChanged);
+            playerNames = new List<string>();
+        });
+
         await hubConnection.StartAsync();
     }
 
     private async Task AddPlayer()
     {
+        var test = hubConnection?.State;
+
         if (hubConnection is not null)
         {
-            await hubConnection.SendAsync("AddNewPlayer", playerName, joinGameCode);
+            await hubConnection.SendAsync("AddNewPlayer", addPlayerName, joinGameCode);
+        }
+    }
+
+    private async Task CreateGame()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("CreateNewGame", createGamePlayerName);
         }
     }
 

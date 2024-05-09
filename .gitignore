@@ -6,7 +6,6 @@
 # Visual Studio files
 .vscode/
 *.suo
-*.sln
 *.user
 *.userprefs
 *.lock.json

@@ -1,9 +1,10 @@
-﻿@page "/Lobby"
+﻿@page "/GameArea"
+@using nabegemu.Database.Models
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
 @implements IAsyncDisposable
 
-<h3>Game Lobby</h3>
+<h3>Game Lobby: @gameCode</h3>
 
 @if (requiredPlayersMet)
 {
@@ -32,6 +33,7 @@ else
     private HubConnection? hubConnection;
     private List<string> playerNames = new List<string>();
     private bool requiredPlayersMet = false;
+    private int? gameCode;
 
     protected override async Task OnInitializedAsync()
     {
@@ -39,9 +41,14 @@ else
         .WithUrl(Navigation.ToAbsoluteUri("/lobbyhub"))
         .Build();
 
-        hubConnection.On<string>("NewPlayerAdded", (playerName) =>
+        hubConnection.On<Game>("NewPlayerAdded", (game) =>
         {
-            playerNames.Add(playerName);            
+            gameCode = game.GameId;
+
+            foreach(var player in game.Players)
+            {
+                playerNames.Add(player.Name);
+            }
 
             if (playerNames.Count == 4)
             {
@@ -49,6 +56,17 @@ else
             }
 
             InvokeAsync(StateHasChanged);
+            playerNames = new List<string>();
+        });
+
+        hubConnection.On<Game>("NewGameCreated", (game) =>
+        {
+            gameCode = game.Players[0].Code;
+
+            playerNames.Add(game.Players[0].Name);
+
+            InvokeAsync(StateHasChanged);
+            playerNames = new List<string>();
         });
 
         await hubConnection.StartAsync();

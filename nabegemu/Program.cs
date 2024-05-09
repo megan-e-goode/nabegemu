@@ -1,4 +1,5 @@
 using nabegemu.Components;
+using nabegemu.Database.Interfaces;
 using nabegemu.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddScoped<IGameRepository, GameRepository>();
 
 var app = builder.Build();
 
