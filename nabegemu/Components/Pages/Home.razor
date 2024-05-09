@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using nabegemu.Database.Models
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
 @implements IAsyncDisposable
@@ -10,7 +11,8 @@
     <h2>The Hot Pot Game!</h2>
 </div>
 
-<div class="flex justify-content--center">
+@if (!sessionCreated) {
+    <div class="flex justify-content--center">
     <img src="/images/hot-pot-cute-logo-1.jpeg" class="image--main" />
 </div>
 
@@ -32,12 +34,44 @@
         <button class="btn btn-sm btn-link" type="button" @onclick="CreateGame">Click here!</button>
     </div>
 </div>
+}
+
+@if (sessionCreated) {
+    <h3>Game Lobby: @gameCode</h3>
+
+    @if (requiredPlayersMet)
+    {
+        <p>Loading game...</p>
+
+        <ul>
+            @foreach (var playerName in playerNames)
+            {
+                <li>Chef @playerName</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>Hiring cooks...</p>
+
+        <ul>
+            @foreach (var playerName in playerNames)
+            {
+                <li>@playerName</li>
+            }
+        </ul>
+    }
+}
 
 @code {
     private HubConnection? hubConnection;
     private string? addPlayerName;
     private string? createGamePlayerName;
     private string? joinGameCode;
+    private List<string> playerNames = new List<string>();
+    private bool requiredPlayersMet = false;
+    private bool sessionCreated = false;
+    private int? gameCode;
 
     public bool IsConnected =>
         hubConnection?.State == HubConnectionState.Connected;
@@ -47,6 +81,36 @@
         hubConnection = new HubConnectionBuilder()
             .WithUrl(Navigation.ToAbsoluteUri("/lobbyhub"))
             .Build();
+
+        hubConnection.On<Game>("NewPlayerAdded", (game) =>
+        {
+            gameCode = game.GameId;
+            sessionCreated = true;
+
+            foreach (var player in game.Players)
+            {
+                playerNames.Add(player.Name);
+            }
+
+            if (playerNames.Count == 4)
+            {
+                requiredPlayersMet = true;
+            }
+
+            InvokeAsync(StateHasChanged);
+            playerNames = new List<string>();
+        });
+
+        hubConnection.On<Game>("NewGameCreated", (game) =>
+        {
+            gameCode = game.Players[0].Code;
+            sessionCreated = true;
+
+            playerNames.Add(game.Players[0].Name);
+
+            InvokeAsync(StateHasChanged);
+            playerNames = new List<string>();
+        });
 
         await hubConnection.StartAsync();
     }
@@ -58,8 +122,6 @@
         if (hubConnection is not null)
         {
             await hubConnection.SendAsync("AddNewPlayer", addPlayerName, joinGameCode);
-
-            Navigation.NavigateTo("/Lobby");
         }
     }
 
@@ -68,8 +130,6 @@
         if (hubConnection is not null)
         {
             await hubConnection.SendAsync("CreateNewGame", createGamePlayerName);
-
-            Navigation.NavigateTo("/Lobby");
         }
     }
 

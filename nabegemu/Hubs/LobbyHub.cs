@@ -22,7 +22,9 @@ public class LobbyHub : Hub
 
         var game = _gameRepository.GetGame(int.Parse(gameCode));
 
-        await Clients.All.SendAsync("NewPlayerAdded", game);
+        await Groups.AddToGroupAsync(Context.ConnectionId, $"game-{game.GameId}");
+
+        await Clients.Group($"game-{game.GameId}").SendAsync("NewPlayerAdded", game);
     }
 
     public async Task CreateNewGame(string playerName)
@@ -32,6 +34,8 @@ public class LobbyHub : Hub
 
         var game = _gameRepository.CreateGame(player);
 
-        await Clients.All.SendAsync("NewGameCreated", game);
+        await Groups.AddToGroupAsync(Context.ConnectionId, $"game-{game.GameId}");
+
+        await Clients.Group($"game-{game.GameId}").SendAsync("NewGameCreated", game);
     }
 }
