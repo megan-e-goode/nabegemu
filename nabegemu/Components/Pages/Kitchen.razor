@@ -1,0 +1,33 @@
+﻿@page "/Kitchen"
+@using nabegemu.Database.Models
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
+@implements IAsyncDisposable
+
+<h3>Game Area</h3>
+
+<p> in game area</p>
+
+@code {
+    private HubConnection? hubConnection;
+    private List<string> playerNames = new List<string>();
+    private bool requiredPlayersMet = false;
+    private int? gameCode;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+        .WithUrl(Navigation.ToAbsoluteUri("/lobbyhub"))
+        .Build();
+
+        await hubConnection.StartAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}

@@ -99,6 +99,12 @@
 
             InvokeAsync(StateHasChanged);
             playerNames = new List<string>();
+
+            if (requiredPlayersMet)
+            {
+                Task.Delay(5000);
+                Navigation.NavigateTo("/Kitchen");
+            }
         });
 
         hubConnection.On<Game>("NewGameCreated", (game) =>
