@@ -9,38 +9,83 @@
 <div>
     <div data-selection-area>
         <div data-discard-area>
-            <div data-player-discard-a>
-                @kitchenThings.PlayerDiscardA.Last().Name
+            <div data-player-discard-a class="panel panel-default">
+                <div class="panel-heading">@kitchenThings.PlayerDiscardA.Last().Name</div>
+                <div class="panel-body">
+                    <ul>
+                        <li>@kitchenThings.PlayerDiscardA.Last().Colour</li>
+                        <li>@kitchenThings.PlayerDiscardA.Last().Type</li>
+                    </ul>                    
+                </div>
             </div>
-            <div data-player-discard-b>
-                @kitchenThings.PlayerDiscardB.Last().Name
+
+            <div data-player-discard-b class="panel panel-default">
+                <div class="panel-heading">@kitchenThings.PlayerDiscardB.Last().Name</div>
+                <div class="panel-body">
+                    <ul>
+                        <li>@kitchenThings.PlayerDiscardB.Last().Colour</li>
+                        <li>@kitchenThings.PlayerDiscardB.Last().Type</li>
+                    </ul>
+                </div>
             </div>
-            <div data-player-discard-c>
-                @kitchenThings.PlayerDiscardC.Last().Name
+
+            <div data-player-discard-c class="panel panel-default">
+                <div class="panel-heading">@kitchenThings.PlayerDiscardC.Last().Name</div>
+                <div class="panel-body">
+                    <ul>
+                        <li>@kitchenThings.PlayerDiscardC.Last().Colour</li>
+                        <li>@kitchenThings.PlayerDiscardC.Last().Type</li>
+                    </ul>
+                </div>
             </div>
-            <div data-your-discard>
-                @kitchenThings.YourDiscard.Last().Name
+
+            <div data-your-discard class="panel panel-default">
+                <div class="panel-heading">@kitchenThings.YourDiscard.Last().Name</div>
+                <div class="panel-body">
+                    <ul>
+                        <li>@kitchenThings.YourDiscard.Last().Colour</li>
+                        <li>@kitchenThings.YourDiscard.Last().Type</li>
+                    </ul>
+                </div>
             </div>
         </div>
 
         <div data-draw-area>
-            <div data-draw-deck>
-                @kitchenThings.DrawDeck.Last().Name
+            <div data-draw-deck class="panel panel-default">
+                <div class="panel-heading">@kitchenThings.DrawDeck.Last().Name</div>
+                <div class="panel-body">
+                    <ul>
+                        <li>@kitchenThings.DrawDeck.Last().Colour</li>
+                        <li>@kitchenThings.DrawDeck.Last().Type</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 
     <div data-active-card-area>
-        <div data-active-card>
-            @kitchenThings.ActiveCard.Name
+        <div data-active-card class="panel panel-default">
+            <div class="panel-heading">@kitchenThings.ActiveCard.Name</div>
+            <div class="panel-body">
+                <ul>
+                    <li>@kitchenThings.ActiveCard.Colour</li>
+                    <li>@kitchenThings.ActiveCard.Type</li>
+                </ul>
+            </div>
         </div>
     </div>
 
     <div data-your-deck-area>
         @foreach (var card in kitchenThings.YourHand)
         {
-            <div data-your-deck-card>
-                @card.Name
+            <div data-your-deck-card class="panel panel-default">
+                <div class="panel-heading">@card.Name</div>
+                <div class="panel-body">
+                    <ul>
+                        <li>@card.Colour</li>
+                        <li>@card.Type</li>
+                    </ul>
+                </div>
             </div>
         }
     </div>
