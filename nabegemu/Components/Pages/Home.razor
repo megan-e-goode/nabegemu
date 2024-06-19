@@ -72,6 +72,7 @@
     private bool requiredPlayersMet = false;
     private bool sessionCreated = false;
     private int? gameCode;
+    // private Guid? player_Id;
 
     public bool IsConnected =>
         hubConnection?.State == HubConnectionState.Connected;
@@ -85,6 +86,7 @@
         hubConnection.On<Game>("NewPlayerAdded", (game) =>
         {
             gameCode = game.GameId;
+            // player_Id = game.Players.First(player => player.Name == addPlayerName).Id;
             sessionCreated = true;
 
             foreach (var player in game.Players)
@@ -110,6 +112,7 @@
         hubConnection.On<Game>("NewGameCreated", (game) =>
         {
             gameCode = game.Players[0].Code;
+            // player_Id = game.Players[0].Id;
             sessionCreated = true;
 
             playerNames.Add(game.Players[0].Name);

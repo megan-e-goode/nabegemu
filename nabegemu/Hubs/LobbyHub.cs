@@ -23,6 +23,7 @@ public class LobbyHub : Hub
         var game = _gameRepository.GetGame(int.Parse(gameCode));
 
         await Groups.AddToGroupAsync(Context.ConnectionId, $"game-{game.GameId}");
+        await Groups.AddToGroupAsync(Context.ConnectionId, $"player-{newPlayer.Id}");
 
         await Clients.Group($"game-{game.GameId}").SendAsync("NewPlayerAdded", game);
     }
@@ -35,7 +36,17 @@ public class LobbyHub : Hub
         var game = _gameRepository.CreateGame(player);
 
         await Groups.AddToGroupAsync(Context.ConnectionId, $"game-{game.GameId}");
+        await Groups.AddToGroupAsync(Context.ConnectionId, $"player-{player.Id}");
 
         await Clients.Group($"game-{game.GameId}").SendAsync("NewGameCreated", game);
+    }
+
+    public async Task PrepKitchen(string gameCode, Guid playerId)
+    {
+        var player = _gameRepository.GetPlayer(int.Parse(gameCode), playerId);
+
+        var kitchen = new KitchenThings();
+
+        await Clients.Group($"player-{player.Id}").SendAsync("PrepKitchenComplete", kitchen);
     }
 }

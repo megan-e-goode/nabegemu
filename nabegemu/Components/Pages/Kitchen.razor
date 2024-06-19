@@ -4,15 +4,51 @@
 @inject NavigationManager Navigation
 @implements IAsyncDisposable
 
-<h3>Game Area</h3>
+<h3>Kitchen</h3>
 
-<p> in game area</p>
+<div>
+    <div data-selection-area>
+        <div data-discard-area>
+            <div data-player-discard-a>
+                @kitchenThings.PlayerDiscardA.Last().Name
+            </div>
+            <div data-player-discard-b>
+                @kitchenThings.PlayerDiscardB.Last().Name
+            </div>
+            <div data-player-discard-c>
+                @kitchenThings.PlayerDiscardC.Last().Name
+            </div>
+            <div data-your-discard>
+                @kitchenThings.YourDiscard.Last().Name
+            </div>
+        </div>
+
+        <div data-draw-area>
+            <div data-draw-deck>
+                @kitchenThings.DrawDeck.Last().Name
+            </div>
+        </div>
+    </div>
+
+    <div data-active-card-area>
+        <div data-active-card>
+            @kitchenThings.ActiveCard.Name
+        </div>
+    </div>
+
+    <div data-your-deck-area>
+        @foreach (var card in kitchenThings.YourHand)
+        {
+            <div data-your-deck-card>
+                @card.Name
+            </div>
+        }
+    </div>
+</div>
 
 @code {
     private HubConnection? hubConnection;
-    private List<string> playerNames = new List<string>();
-    private bool requiredPlayersMet = false;
-    private int? gameCode;
+    private KitchenThings kitchenThings = new KitchenThings();
 
     protected override async Task OnInitializedAsync()
     {
@@ -20,7 +56,26 @@
         .WithUrl(Navigation.ToAbsoluteUri("/lobbyhub"))
         .Build();
 
+        hubConnection.On<KitchenThings>("PrepKitchenComplete", (kitchenBits) =>
+        {
+            kitchenThings = kitchenBits;
+
+            InvokeAsync(StateHasChanged);
+        });
+
         await hubConnection.StartAsync();
+
+        await PrepKitchen();
+    }
+
+    private async Task PrepKitchen()
+    {
+        var test = hubConnection?.State;
+
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("PrepKitchen");
+        }
     }
 
     public async ValueTask DisposeAsync()

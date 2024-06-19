@@ -88,12 +88,29 @@ namespace nabegemu.Database.Interfaces
 
                 if (game == null)
                 {
-                    // throw error here
+                    throw new Exception("Game not found");
                 } else
                 {
                     game.Players.Add(player);
                     context.SaveChanges();
                 }
+            }
+        }
+
+        public Player GetPlayer(int gameId, Guid playerId)
+        {
+            using (var context = new GameContext())
+            {
+                var game = context.Games.Include(game => game.Players).FirstOrDefault(x => x.GameId == gameId);
+
+                if (game == null)
+                {
+                    throw new Exception("Game not found");
+                }
+
+                var player = game.Players.First(x => x.Id == playerId);
+
+                return player;
             }
         }
     }
