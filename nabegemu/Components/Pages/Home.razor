@@ -1,7 +1,9 @@
 ﻿@page "/"
 @using nabegemu.Database.Models
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
+@inject ProtectedSessionStorage SessionStorage
 @implements IAsyncDisposable
 
 <PageTitle>Home</PageTitle>
@@ -38,6 +40,7 @@
 
 @if (sessionCreated) {
     <h3>Game Lobby: @gameCode</h3>
+    <h4>Player Id: @playerDisplayId</h4> // Remove when done with
 
     @if (requiredPlayersMet)
     {
@@ -72,7 +75,7 @@
     private bool requiredPlayersMet = false;
     private bool sessionCreated = false;
     private int? gameCode;
-    // private Guid? player_Id;
+    private string playerDisplayId; // Remove when done with
 
     public bool IsConnected =>
         hubConnection?.State == HubConnectionState.Connected;
@@ -83,11 +86,10 @@
             .WithUrl(Navigation.ToAbsoluteUri("/lobbyhub"))
             .Build();
 
-        hubConnection.On<Game>("NewPlayerAdded", (game) =>
+        hubConnection.On<Game>("NewPlayerAdded", async (game) =>
         {
             gameCode = game.GameId;
-            // player_Id = game.Players.First(player => player.Name == addPlayerName).Id;
-            sessionCreated = true;
+            sessionCreated = true;          
 
             foreach (var player in game.Players)
             {
@@ -99,26 +101,32 @@
                 requiredPlayersMet = true;
             }
 
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
             playerNames = new List<string>();
 
             if (requiredPlayersMet)
             {
-                Task.Delay(5000);
+                await Task.Delay(5000);
                 Navigation.NavigateTo("/Kitchen");
             }
         });
 
-        hubConnection.On<Game>("NewGameCreated", (game) =>
+        hubConnection.On<Game>("NewGameCreated", async (game) =>
         {
             gameCode = game.Players[0].Code;
-            // player_Id = game.Players[0].Id;
             sessionCreated = true;
+            await SessionStorage.SetAsync("PlayerId", game.Players[0].Id);
 
             playerNames.Add(game.Players[0].Name);
 
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
             playerNames = new List<string>();
+        });
+
+        hubConnection.On<Guid>("SetPlayerIdInSession", async (playerId) =>
+        {
+            await SessionStorage.SetAsync("PlayerId", playerId);
+            playerDisplayId = playerId.ToString();
         });
 
         await hubConnection.StartAsync();

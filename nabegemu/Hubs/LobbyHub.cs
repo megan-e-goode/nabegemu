@@ -25,6 +25,7 @@ public class LobbyHub : Hub
         await Groups.AddToGroupAsync(Context.ConnectionId, $"game-{game.GameId}");
         await Groups.AddToGroupAsync(Context.ConnectionId, $"player-{newPlayer.Id}");
 
+        await Clients.Group($"player-{newPlayer.Id}").SendAsync("SetPlayerIdInSession", newPlayer.Id);
         await Clients.Group($"game-{game.GameId}").SendAsync("NewPlayerAdded", game);
     }
 
@@ -34,10 +35,12 @@ public class LobbyHub : Hub
         player.Name = playerName;
 
         var game = _gameRepository.CreateGame(player);
+        var playerId = game.Players.First().Id;
 
         await Groups.AddToGroupAsync(Context.ConnectionId, $"game-{game.GameId}");
-        await Groups.AddToGroupAsync(Context.ConnectionId, $"player-{player.Id}");
+        await Groups.AddToGroupAsync(Context.ConnectionId, $"player-{playerId}");
 
+        await Clients.Group($"player-{playerId}").SendAsync("SetPlayerIdInSession", playerId);
         await Clients.Group($"game-{game.GameId}").SendAsync("NewGameCreated", game);
     }
 

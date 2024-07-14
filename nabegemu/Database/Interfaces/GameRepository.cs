@@ -6,23 +6,6 @@ namespace nabegemu.Database.Interfaces
 {
     public class GameRepository : IGameRepository
     {
-        /*public GameRepository()
-        {
-            using (var context = new GameContext())
-            {
-                var game = new Game
-                {
-                    GameId = 1235,
-                    Players = new List<Player>
-                    {
-                        new Player("Meg", 1235)
-                    }
-                };
-
-                context.Games.Add(game);
-                context.SaveChanges();
-            }
-        }*/
 
         public List<Game> GetGames()
         {
