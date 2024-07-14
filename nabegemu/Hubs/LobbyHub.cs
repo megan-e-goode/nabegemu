@@ -25,7 +25,7 @@ public class LobbyHub : Hub
         await Groups.AddToGroupAsync(Context.ConnectionId, $"game-{game.GameId}");
         await Groups.AddToGroupAsync(Context.ConnectionId, $"player-{newPlayer.Id}");
 
-        await Clients.Group($"player-{newPlayer.Id}").SendAsync("SetPlayerIdInSession", newPlayer.Id);
+        await Clients.Group($"player-{newPlayer.Id}").SendAsync("SetPlayerDataInSession", newPlayer);
         await Clients.Group($"game-{game.GameId}").SendAsync("NewPlayerAdded", game);
     }
 
@@ -35,18 +35,18 @@ public class LobbyHub : Hub
         player.Name = playerName;
 
         var game = _gameRepository.CreateGame(player);
-        var playerId = game.Players.First().Id;
+        player = game.Players.First();
 
         await Groups.AddToGroupAsync(Context.ConnectionId, $"game-{game.GameId}");
-        await Groups.AddToGroupAsync(Context.ConnectionId, $"player-{playerId}");
+        await Groups.AddToGroupAsync(Context.ConnectionId, $"player-{player.Id}");
 
-        await Clients.Group($"player-{playerId}").SendAsync("SetPlayerIdInSession", playerId);
+        await Clients.Group($"player-{player.Id}").SendAsync("SetPlayerDataInSession", player);
         await Clients.Group($"game-{game.GameId}").SendAsync("NewGameCreated", game);
     }
 
-    public async Task PrepKitchen(string gameCode, Guid playerId)
+    public async Task PrepKitchen(int gameCode, Guid playerId)
     {
-        var player = _gameRepository.GetPlayer(int.Parse(gameCode), playerId);
+        var player = _gameRepository.GetPlayer(gameCode, playerId);
 
         var kitchen = new KitchenThings();
 

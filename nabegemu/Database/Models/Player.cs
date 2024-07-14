@@ -15,7 +15,7 @@ namespace nabegemu.Database.Models
         public string Name { get; set; }
 
         [RegularExpression("^\\d{4}$")]
-        public int? Code { get; set; }
+        public int Code { get; set; }
 
         public int Score { get; set; }
     }

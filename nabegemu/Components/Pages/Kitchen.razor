@@ -1,10 +1,12 @@
 ﻿@page "/Kitchen"
-@using nabegemu.Database.Models
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
+@inject ProtectedSessionStorage SessionStorage
 @implements IAsyncDisposable
 
 <h3>Kitchen</h3>
+<h4>Game code: @gameCode</h4>
+<h4>PlayerId: @playerId</h4>
 
 <div>
     <div data-selection-area>
@@ -94,6 +96,8 @@
 @code {
     private HubConnection? hubConnection;
     private KitchenThings kitchenThings = new KitchenThings();
+    private int gameCode;
+    private string playerId;
 
     protected override async Task OnInitializedAsync()
     {
@@ -109,17 +113,26 @@
         });
 
         await hubConnection.StartAsync();
-
-        await PrepKitchen();
     }
 
     private async Task PrepKitchen()
     {
-        var test = hubConnection?.State;
-
         if (hubConnection is not null)
         {
-            await hubConnection.SendAsync("PrepKitchen");
+            var sessionPlayerId = await SessionStorage.GetAsync<Guid>("PlayerId");
+            var sessionGameCode = await SessionStorage.GetAsync<int>("GameCode");
+            gameCode = sessionGameCode.Value;
+            playerId = sessionPlayerId.Value.ToString();
+
+            await hubConnection.SendAsync("PrepKitchen", gameCode, playerId);
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await PrepKitchen();
         }
     }
 

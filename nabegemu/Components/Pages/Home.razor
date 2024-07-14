@@ -1,6 +1,4 @@
 ﻿@page "/"
-@using nabegemu.Database.Models
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
 @inject ProtectedSessionStorage SessionStorage
@@ -111,9 +109,10 @@
 
         hubConnection.On<Game>("NewGameCreated", async (game) =>
         {
-            gameCode = game.Players[0].Code;
+            gameCode = game.GameId;
             sessionCreated = true;
             await SessionStorage.SetAsync("PlayerId", game.Players[0].Id);
+            await SessionStorage.SetAsync("GameCode", gameCode);
 
             playerNames.Add(game.Players[0].Name);
 
@@ -121,9 +120,10 @@
             playerNames = new List<string>();
         });
 
-        hubConnection.On<Guid>("SetPlayerIdInSession", async (playerId) =>
+        hubConnection.On<Player>("SetPlayerDataInSession", async (player) =>
         {
-            await SessionStorage.SetAsync("PlayerId", playerId);
+            await SessionStorage.SetAsync("PlayerId", player.Id);
+            await SessionStorage.SetAsync("GameCode", player.Code);
         });
 
         await hubConnection.StartAsync();
