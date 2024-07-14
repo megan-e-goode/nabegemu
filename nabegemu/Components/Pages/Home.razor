@@ -40,7 +40,6 @@
 
 @if (sessionCreated) {
     <h3>Game Lobby: @gameCode</h3>
-    <h4>Player Id: @playerDisplayId</h4> // Remove when done with
 
     @if (requiredPlayersMet)
     {
@@ -75,7 +74,6 @@
     private bool requiredPlayersMet = false;
     private bool sessionCreated = false;
     private int? gameCode;
-    private string playerDisplayId; // Remove when done with
 
     public bool IsConnected =>
         hubConnection?.State == HubConnectionState.Connected;
@@ -106,7 +104,7 @@
 
             if (requiredPlayersMet)
             {
-                await Task.Delay(5000);
+                await Task.Delay(3000);
                 Navigation.NavigateTo("/Kitchen");
             }
         });
@@ -126,7 +124,6 @@
         hubConnection.On<Guid>("SetPlayerIdInSession", async (playerId) =>
         {
             await SessionStorage.SetAsync("PlayerId", playerId);
-            playerDisplayId = playerId.ToString();
         });
 
         await hubConnection.StartAsync();
