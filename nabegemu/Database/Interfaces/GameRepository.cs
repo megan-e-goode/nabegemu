@@ -96,5 +96,24 @@ namespace nabegemu.Database.Interfaces
                 return player;
             }
         }
+
+        public void AddKitchenItemsToPlayer(int gameId, Guid playerId, Kitchen kitchen)
+        {
+            using (var context = new GameContext())
+            {
+                var game = context.Games.Include(game => game.Players).FirstOrDefault(x => x.GameId == gameId);
+
+                if (game == null)
+                {
+                    throw new Exception("Game not found");
+                }
+
+                var player = game.Players.First(x => x.Id == playerId);
+
+                player.Kitchen = kitchen;
+
+                context.SaveChanges();
+            }
+        }
     }
 }

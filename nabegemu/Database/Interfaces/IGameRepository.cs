@@ -13,5 +13,7 @@ namespace nabegemu.Database.Interfaces
         void AddPlayerToGame(int gameId, Player player);
 
         Player GetPlayer(int gameId, Guid playerId);
+
+        void AddKitchenItemsToPlayer(int gameId, Guid playerId, Kitchen kitchen);
     }
 }
