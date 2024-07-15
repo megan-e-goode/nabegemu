@@ -96,5 +96,10 @@ namespace nabegemu.Database.Interfaces
                 return player;
             }
         }
+
+        public void AddKitchenThingsToPlayer(int gameId, Guid playerId, KitchenThings kitchenThings)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
