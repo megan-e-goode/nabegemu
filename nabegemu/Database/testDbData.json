@@ -3,25 +3,25 @@
     "players": [
         {
             "id": 1,
-            "name": "Meg",
+            "name": "PlayerOne",
             "code": 1234,
             "score": 0
         },
         {
             "id": 2,
-            "name": "Chris",
+            "name": "PlayerTwo",
             "code": 1234,
             "score": 0
         },
         {
             "id": 3,
-            "name": "Suz",
+            "name": "PlayerThree",
             "code": 1234,
             "score": 0
         },
         {
             "id": 4,
-            "name": "Tom",
+            "name": "PlayerFour",
             "code": 1234,
             "score": 0
         }
