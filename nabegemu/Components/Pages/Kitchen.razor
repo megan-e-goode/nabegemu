@@ -1,0 +1,146 @@
+﻿@page "/Kitchen"
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
+@inject ProtectedSessionStorage SessionStorage
+@implements IAsyncDisposable
+
+<h3>Kitchen</h3>
+<h4>Game code: @gameCode</h4>
+<h4>PlayerId: @playerId</h4>
+
+<div>
+    <div data-selection-area>
+        <div data-discard-area>
+            <div data-player-discard-a class="panel panel-default">
+                <div class="panel-heading">@kitchenThings.PlayerDiscardA.Last().Name</div>
+                <div class="panel-body">
+                    <ul>
+                        <li>@kitchenThings.PlayerDiscardA.Last().Colour</li>
+                        <li>@kitchenThings.PlayerDiscardA.Last().Type</li>
+                    </ul>                    
+                </div>
+            </div>
+
+            <div data-player-discard-b class="panel panel-default">
+                <div class="panel-heading">@kitchenThings.PlayerDiscardB.Last().Name</div>
+                <div class="panel-body">
+                    <ul>
+                        <li>@kitchenThings.PlayerDiscardB.Last().Colour</li>
+                        <li>@kitchenThings.PlayerDiscardB.Last().Type</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div data-player-discard-c class="panel panel-default">
+                <div class="panel-heading">@kitchenThings.PlayerDiscardC.Last().Name</div>
+                <div class="panel-body">
+                    <ul>
+                        <li>@kitchenThings.PlayerDiscardC.Last().Colour</li>
+                        <li>@kitchenThings.PlayerDiscardC.Last().Type</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div data-your-discard class="panel panel-default">
+                <div class="panel-heading">@kitchenThings.YourDiscard.Last().Name</div>
+                <div class="panel-body">
+                    <ul>
+                        <li>@kitchenThings.YourDiscard.Last().Colour</li>
+                        <li>@kitchenThings.YourDiscard.Last().Type</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div data-draw-area>
+            <div data-draw-deck class="panel panel-default">
+                <div class="panel-heading">@kitchenThings.DrawDeck.Last().Name</div>
+                <div class="panel-body">
+                    <ul>
+                        <li>@kitchenThings.DrawDeck.Last().Colour</li>
+                        <li>@kitchenThings.DrawDeck.Last().Type</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div data-active-card-area>
+        <div data-active-card class="panel panel-default">
+            <div class="panel-heading">@kitchenThings.ActiveCard.Name</div>
+            <div class="panel-body">
+                <ul>
+                    <li>@kitchenThings.ActiveCard.Colour</li>
+                    <li>@kitchenThings.ActiveCard.Type</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div data-your-deck-area>
+        @foreach (var card in kitchenThings.YourHand)
+        {
+            <div data-your-deck-card class="panel panel-default">
+                <div class="panel-heading">@card.Name</div>
+                <div class="panel-body">
+                    <ul>
+                        <li>@card.Colour</li>
+                        <li>@card.Type</li>
+                    </ul>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private HubConnection? hubConnection;
+    private KitchenThings kitchenThings = new KitchenThings();
+    private int gameCode;
+    private string playerId = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+        .WithUrl(Navigation.ToAbsoluteUri("/lobbyhub"))
+        .Build();
+
+        hubConnection.On<KitchenThings>("PrepKitchenComplete", (kitchenBits) =>
+        {
+            kitchenThings = kitchenBits;
+
+            InvokeAsync(StateHasChanged);
+        });
+
+        await hubConnection.StartAsync();
+    }
+
+    private async Task PrepKitchen()
+    {
+        if (hubConnection is not null)
+        {
+            var sessionPlayerId = await SessionStorage.GetAsync<Guid>("PlayerId");
+            var sessionGameCode = await SessionStorage.GetAsync<int>("GameCode");
+            gameCode = sessionGameCode.Value;
+            playerId = sessionPlayerId.Value.ToString();
+
+            await hubConnection.SendAsync("PrepKitchen", gameCode, playerId);
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await PrepKitchen();
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}

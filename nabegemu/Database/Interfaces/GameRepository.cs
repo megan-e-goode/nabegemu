@@ -6,23 +6,6 @@ namespace nabegemu.Database.Interfaces
 {
     public class GameRepository : IGameRepository
     {
-        /*public GameRepository()
-        {
-            using (var context = new GameContext())
-            {
-                var game = new Game
-                {
-                    GameId = 1235,
-                    Players = new List<Player>
-                    {
-                        new Player("Meg", 1235)
-                    }
-                };
-
-                context.Games.Add(game);
-                context.SaveChanges();
-            }
-        }*/
 
         public List<Game> GetGames()
         {
@@ -88,13 +71,35 @@ namespace nabegemu.Database.Interfaces
 
                 if (game == null)
                 {
-                    // throw error here
+                    throw new Exception("Game not found");
                 } else
                 {
                     game.Players.Add(player);
                     context.SaveChanges();
                 }
             }
+        }
+
+        public Player GetPlayer(int gameId, Guid playerId)
+        {
+            using (var context = new GameContext())
+            {
+                var game = context.Games.Include(game => game.Players).FirstOrDefault(x => x.GameId == gameId);
+
+                if (game == null)
+                {
+                    throw new Exception("Game not found");
+                }
+
+                var player = game.Players.First(x => x.Id == playerId);
+
+                return player;
+            }
+        }
+
+        public void AddKitchenThingsToPlayer(int gameId, Guid playerId, KitchenThings kitchenThings)
+        {
+            throw new NotImplementedException();
         }
     }
 }

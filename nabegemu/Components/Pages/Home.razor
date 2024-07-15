@@ -1,7 +1,7 @@
 ﻿@page "/"
-@using nabegemu.Database.Models
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
+@inject ProtectedSessionStorage SessionStorage
 @implements IAsyncDisposable
 
 <PageTitle>Home</PageTitle>
@@ -82,10 +82,10 @@
             .WithUrl(Navigation.ToAbsoluteUri("/lobbyhub"))
             .Build();
 
-        hubConnection.On<Game>("NewPlayerAdded", (game) =>
+        hubConnection.On<Game>("NewPlayerAdded", async (game) =>
         {
             gameCode = game.GameId;
-            sessionCreated = true;
+            sessionCreated = true;          
 
             foreach (var player in game.Players)
             {
@@ -97,19 +97,33 @@
                 requiredPlayersMet = true;
             }
 
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
             playerNames = new List<string>();
+
+            if (requiredPlayersMet)
+            {
+                await Task.Delay(3000);
+                Navigation.NavigateTo("/Kitchen");
+            }
         });
 
-        hubConnection.On<Game>("NewGameCreated", (game) =>
+        hubConnection.On<Game>("NewGameCreated", async (game) =>
         {
-            gameCode = game.Players[0].Code;
+            gameCode = game.GameId;
             sessionCreated = true;
+            await SessionStorage.SetAsync("PlayerId", game.Players[0].Id);
+            await SessionStorage.SetAsync("GameCode", gameCode);
 
             playerNames.Add(game.Players[0].Name);
 
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
             playerNames = new List<string>();
+        });
+
+        hubConnection.On<Player>("SetPlayerDataInSession", async (player) =>
+        {
+            await SessionStorage.SetAsync("PlayerId", player.Id);
+            await SessionStorage.SetAsync("GameCode", player.Code);
         });
 
         await hubConnection.StartAsync();
