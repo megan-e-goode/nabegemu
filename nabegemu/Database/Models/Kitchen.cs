@@ -1,5 +1,6 @@
 ﻿using nabegemu.Database.Enum;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace nabegemu.Database.Models
 {
@@ -39,6 +40,8 @@ namespace nabegemu.Database.Models
             DrawDeck = alteredDeck;
 
             ActiveCard = DrawDeck[random.Next(0, DrawDeck.Count)];
+
+            Id = Guid.NewGuid();
         }
 
         private List<Card> CompleteDeck = new List<Card>
@@ -68,6 +71,9 @@ namespace nabegemu.Database.Models
             new Card(CardType.Spices, "Ginger"),
             new Card(CardType.Spices, "Dari Cloves")
         };
+
+        [Key]
+        public Guid Id { get; init; }
 
         public Card ActiveCard { get; set; }
 

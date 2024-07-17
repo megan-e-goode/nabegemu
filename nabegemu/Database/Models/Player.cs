@@ -6,10 +6,12 @@ namespace nabegemu.Database.Models
     {
         public Player()
         {
-            Id = new Guid();
+            Id = Guid.NewGuid();
             Score = 0;
+            KitchenThings = new();
         }
 
+        [Key]
         public Guid Id { get; set; }
 
         public string Name { get; set; }
@@ -18,5 +20,7 @@ namespace nabegemu.Database.Models
         public int Code { get; set; }
 
         public int Score { get; set; }
+
+        public KitchenThings KitchenThings { get; set; }
     }
 }
