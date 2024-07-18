@@ -35,20 +35,16 @@ namespace nabegemu.Database.Interfaces
 
         public Game CreateGame(Player player)
         {
-            int newGameId = new Random().Next(1000, 10000);
-
             using (var context = new GameContext())
             {
-                var newGame = new Game
+                var newGame = new Game();
+
+                newGame.Players = new List<Player>
                 {
-                    GameId = newGameId,
-                    Players = new List<Player>
+                    new()
                     {
-                        new Player
-                        {
-                            Name = player.Name,
-                            Code = newGameId,
-                        }
+                        Name = player.Name,
+                        Code = newGame.GameId,
                     }
                 };
 
@@ -61,22 +57,25 @@ namespace nabegemu.Database.Interfaces
             
         }
 
-        public void AddPlayerToGame(int gameId, Player player)
+        public Player AddPlayerToGame(int gameId, string playerName)
         {
             using (var context = new GameContext())
             {
                 var game = context.Games
                     .Include(game => game.Players)
-                    .FirstOrDefault(x => x.GameId == gameId);
+                    .FirstOrDefault(x => x.GameId == gameId) 
+                    ?? throw new Exception("Game not found");
+                var newPlayer = new Player
+                {
+                    Name = playerName,
+                    Code = game.GameId,
+                };
 
-                if (game == null)
-                {
-                    throw new Exception("Game not found");
-                } else
-                {
-                    game.Players.Add(player);
-                    context.SaveChanges();
-                }
+                game.Players.Add(newPlayer);
+
+                context.SaveChanges();
+
+                return newPlayer;
             }
         }
 

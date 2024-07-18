@@ -12,13 +12,7 @@ public class LobbyHub : Hub
 
     public async Task AddNewPlayer(string playerName, string gameCode)
     {
-        var newPlayer = new Player
-        {
-            Name = playerName,
-            Code = int.Parse(gameCode)
-        };
-
-        _gameRepository.AddPlayerToGame(int.Parse(gameCode), newPlayer);
+        var newPlayer = _gameRepository.AddPlayerToGame(int.Parse(gameCode), playerName);
 
         var game = _gameRepository.GetGame(int.Parse(gameCode));
 

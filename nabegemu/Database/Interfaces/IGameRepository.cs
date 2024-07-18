@@ -10,7 +10,7 @@ namespace nabegemu.Database.Interfaces
 
         Game CreateGame(Player player);
 
-        void AddPlayerToGame(int gameId, Player player);
+        Player AddPlayerToGame(int gameId, string playerName);
 
         Player GetPlayer(int gameId, Guid playerId);
 
