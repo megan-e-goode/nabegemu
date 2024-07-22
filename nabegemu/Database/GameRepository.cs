@@ -61,11 +61,14 @@ namespace nabegemu.Database
                 .Include(game => game.Players)
                 .FirstOrDefault(x => x.GameId == gameId)
                 ?? throw new Exception("Game not found");
+
             var newPlayer = new Player
             {
                 Name = playerName,
                 Code = game.GameId,
             };
+
+            _context.Players.Add(newPlayer);
 
             game.Players.Add(newPlayer);
 
