@@ -82,7 +82,7 @@
         <div data-your-deck-area>
             @foreach (var card in kitchenThings.YourHand)
             {
-                <div data-your-deck-card class="border border-black max-w-xs h-96 rounded-lg bg-sky-200 flex justify-center items-center">
+                <div data-your-deck-card class="border border-black max-w-xs h-96 rounded-lg bg-@(card.Colour.ToString().ToLower())-200 flex justify-center items-center">
                     <div class="panel-heading">@card.Name</div>
                     <div class="panel-body">
                         <ul>
