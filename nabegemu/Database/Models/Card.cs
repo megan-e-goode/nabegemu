@@ -15,12 +15,12 @@ namespace nabegemu.Database.Models
                 CardType.Meat => CardColour.Red,
                 CardType.Fish => CardColour.Blue,
                 CardType.Veggies => CardColour.Yellow,
-                CardType.Noodles => CardColour.Beige,
+                CardType.Noodles => CardColour.Brown,
                 CardType.Mushrooms => CardColour.Purple,
-                CardType.Carbs => CardColour.Grey,
+                CardType.Carbs => CardColour.Gray,
                 CardType.Greens => CardColour.Green,
                 CardType.Spices => CardColour.Orange,
-                _ => CardColour.Grey
+                _ => CardColour.Gray
             };
         }
 

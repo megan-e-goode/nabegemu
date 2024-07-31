@@ -5,9 +5,9 @@
         Red,
         Blue,
         Yellow,
-        Beige,
+        Brown,
         Purple,
-        Grey,
+        Gray,
         Green,
         Orange
     }
