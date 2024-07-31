@@ -9,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
-builder.Services.AddSingleton<GameContext>();
 
 var app = builder.Build();
 
