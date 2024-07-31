@@ -10,14 +10,11 @@
 
 <div>
     <div data-selection-area>
-        <div data-discard-area>
-            <div data-player-discard-a class="panel panel-default">
+        <div data-discard-area class="hidden">
+            <div data-player-discard-a class="">
                 <div class="panel-heading">@kitchenThings.PlayerDiscardA.Last().Name</div>
                 <div class="panel-body">
-                    <ul>
-                        <li>@kitchenThings.PlayerDiscardA.Last().Colour</li>
-                        <li>@kitchenThings.PlayerDiscardA.Last().Type</li>
-                    </ul>                    
+                    <i> alt=""</i>                 
                 </div>
             </div>
 
@@ -52,7 +49,7 @@
             </div>
         </div>
 
-        <div data-draw-area>
+        <div data-draw-area class="hidden">
             <div data-draw-deck class="panel panel-default">
                 <div class="panel-heading">@kitchenThings.DrawDeck.Last().Name</div>
                 <div class="panel-body">
@@ -66,10 +63,10 @@
     </div>
 
     <div data-active-card-area>
-        <div data-active-card class="panel panel-default">
+        <div data-active-card class="border border-black max-w-xs h-96 rounded-lg bg-sky-200 flex justify-center items-center">
             <div class="panel-heading">@kitchenThings.ActiveCard.Name</div>
             <div class="panel-body">
-                <ul>
+                <ul class="hidden">
                     <li>@kitchenThings.ActiveCard.Colour</li>
                     <li>@kitchenThings.ActiveCard.Type</li>
                 </ul>
@@ -77,10 +74,10 @@
         </div>
     </div>
 
-    <div data-your-deck-area>
+    <div data-your-deck-area class="hidden">
         @foreach (var card in kitchenThings.YourHand)
         {
-            <div data-your-deck-card class="panel panel-default">
+            <div data-your-deck-card class="hide">
                 <div class="panel-heading">@card.Name</div>
                 <div class="panel-body">
                     <ul>
