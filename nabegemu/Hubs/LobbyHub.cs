@@ -5,6 +5,7 @@ namespace nabegemu.Hubs;
 public class LobbyHub : Hub
 {
     readonly IGameRepository _gameRepository;
+
     public LobbyHub(IGameRepository gameRepository)
     {
         _gameRepository = gameRepository;
@@ -12,20 +13,14 @@ public class LobbyHub : Hub
 
     public async Task AddNewPlayer(string playerName, string gameCode)
     {
-        var newPlayer = new Player
-        {
-            Name = playerName,
-            Code = int.Parse(gameCode)
-        };
-
-        _gameRepository.AddPlayerToGame(int.Parse(gameCode), newPlayer);
+        var newPlayer = _gameRepository.AddPlayerToGame(int.Parse(gameCode), playerName);
 
         var game = _gameRepository.GetGame(int.Parse(gameCode));
 
         await Groups.AddToGroupAsync(Context.ConnectionId, $"game-{game.GameId}");
         await Groups.AddToGroupAsync(Context.ConnectionId, $"player-{newPlayer.Id}");
 
-        await Clients.Group($"player-{newPlayer.Id}").SendAsync("SetPlayerDataInSession", newPlayer);
+        await Clients.Caller.SendAsync("SetPlayerDataInSession", newPlayer);
         await Clients.Group($"game-{game.GameId}").SendAsync("NewPlayerAdded", game);
     }
 
@@ -40,7 +35,7 @@ public class LobbyHub : Hub
         await Groups.AddToGroupAsync(Context.ConnectionId, $"game-{game.GameId}");
         await Groups.AddToGroupAsync(Context.ConnectionId, $"player-{player.Id}");
 
-        await Clients.Group($"player-{player.Id}").SendAsync("SetPlayerDataInSession", player);
+        await Clients.Caller.SendAsync("SetPlayerDataInSession", player);
         await Clients.Group($"game-{game.GameId}").SendAsync("NewGameCreated", game);
     }
 
@@ -48,8 +43,6 @@ public class LobbyHub : Hub
     {
         var player = _gameRepository.GetPlayer(gameCode, playerId);
 
-        var kitchen = new KitchenThings();
-
-        await Clients.Group($"player-{player.Id}").SendAsync("PrepKitchenComplete", kitchen);
+        await Clients.Caller.SendAsync("PrepKitchenComplete", player);
     }
 }

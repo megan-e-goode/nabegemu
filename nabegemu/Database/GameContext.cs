@@ -12,5 +12,11 @@ namespace nabegemu.Database
         }
         
         public DbSet<Game> Games { get; set; }
+
+        public DbSet<Player> Players { get; set; }
+
+        public DbSet<KitchenThings> KitchenThings { get; set; }
+
+        public DbSet<Card> Card { get; set; }
     }
 }
