@@ -1,4 +1,5 @@
 ﻿using nabegemu.Database.Enum;
+using System.ComponentModel.DataAnnotations;
 
 namespace nabegemu.Database.Models
 {
@@ -6,6 +7,7 @@ namespace nabegemu.Database.Models
     {
         public Card(CardType type, string name)
         {
+            Id = Guid.NewGuid();
             Name = name;
             Type = type;
             Colour = type switch
@@ -21,6 +23,9 @@ namespace nabegemu.Database.Models
                 _ => CardColour.Grey
             };
         }
+
+        [Key]
+        public Guid Id { get; init; }
 
         public CardType Type { get; set; }
 
