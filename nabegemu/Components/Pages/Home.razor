@@ -6,59 +6,68 @@
 
 <PageTitle>Home</PageTitle>
 
-<div class="sm:container sm:mx-auto">
-    <div class="">
+<div class="flex flex-col items-center">
+    <div class="flex flex-col items-center mb-4">
         <h1>鍋ゲーム!</h1>
         <h2>The Hot Pot Game!</h2>
     </div>
 
     @if (!sessionCreated) {
         <div class="">
-        <img src="/images/hot-pot-cute-logo-1.jpeg" class="image--main" />
-    </div>
+            <img src="/images/hot-pot-cute-logo-1.jpeg" class="image--main" />
+        </div>
 
-    <br />
+        <br />
 
         <div class="">
-        <label for="Join-Game-Code">Get cooking with your name and a game code:</label>
-        <div class="input-group mb-3">
-            <input type="text" id="Player-Name" class="form-control" placeholder="Name" @bind="addPlayerName" aria-label="Player Name" aria-describedby="player-name-input">
-            <input type="text" id="Join-Game-Code" class="form-control" placeholder="Game code" @bind="joinGameCode" aria-label="Join a game code" aria-describedby="join-game-code-input">
-            <div class="input-group-append">
-                <button class="btn btn-success" @onclick="AddPlayer">Go!</button>
+            <label for="Join-Game-Code">Get cooking with your name and a game code:</label>
+            <div class="input-group mb-3">
+                <input type="text" id="Player-Name" class="form-control" placeholder="Name" @bind="addPlayerName" aria-label="Player Name" aria-describedby="player-name-input">
+                <input type="text" id="Join-Game-Code" class="form-control" placeholder="Game code" @bind="joinGameCode" aria-label="Join a game code" aria-describedby="join-game-code-input">
+                <div class="input-group-append">
+                    <button class="btn btn-success" @onclick="AddPlayer">Go!</button>
+                </div>
             </div>
         </div>
 
         <div class="">
-            <small>Want to start a new game?</small>
-            <input type="text" id="Player-Name" class="form-control" placeholder="Name" @bind="createGamePlayerName" aria-label="Player Name" aria-describedby="player-name-input">
-            <button class="btn btn-sm btn-link" type="button" @onclick="CreateGame">Click here!</button>
+            <label for="New-Game">Want to start a new game?</label>
+            <div class="input-group mb-3">
+                <input type="text" id="Player-Name" class="form-control" placeholder="Name" @bind="createGamePlayerName" aria-label="Player Name" aria-describedby="player-name-input">
+                <div class="input-group-append">
+                    <button class="btn btn-success" @onclick="CreateGame">Start!</button>
+                </div>
+            </div>
         </div>
-    </div>
     }
 
     @if (sessionCreated) {
-        <h3>Game Lobby: @gameCode</h3>
+        <div class="flex flex-col items-center mb-2">
+            <div class="mb-2">Game Lobby Code</div>
+            <div class="bg-rose-500 text-white text-2xl p-3 rounded-2xl">
+                @gameCode
+            </div>
+        </div>
 
         @if (requiredPlayersMet)
         {
-            <p>Loading game...</p>
+            <p class="mb-2">Loading game...</p>
 
-            <ul>
+            <ul class="flex flex-col items-center">
                 @foreach (var playerName in playerNames)
                 {
-                    <li>Chef @playerName</li>
+                    <li class="mb-2">Chef @playerName</li>
                 }
             </ul>
         }
         else
         {
-            <p>Hiring cooks...</p>
+            <p class="mb-2">Hiring cooks...</p>
 
             <ul>
                 @foreach (var playerName in playerNames)
                 {
-                    <li>@playerName</li>
+                    <li class="mb-2">@playerName</li>
                 }
             </ul>
         }
