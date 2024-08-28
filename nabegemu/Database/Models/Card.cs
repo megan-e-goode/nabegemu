@@ -32,5 +32,13 @@ namespace nabegemu.Database.Models
         public CardColour Colour { get; set; }
 
         public string Name { get; set; }
+
+        public string ImageName
+        {
+            get
+            {
+                return Name.ToLower().Replace(" ", "-") ?? string.Empty;
+            }
+        }
     }
 }
