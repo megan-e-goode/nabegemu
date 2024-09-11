@@ -39,6 +39,17 @@ a {
   }
 }
 
+.panel-heading {
+  padding: 10px 15px;
+  border-bottom: 1px solid transparent;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+.panel-body {
+  padding: 15px;
+}
+
 .flex {
   display: flex;
 }
@@ -55,6 +66,10 @@ a {
 
 .flex-direction--column {
   flex-direction: column;
+}
+
+.bg-brown-200 {
+  background-color: #BCAAA4;
 }
 
 .content {

@@ -9,43 +9,38 @@ namespace nabegemu.Database.Models
         public KitchenThings()
         {
             Random random = new Random();
-            var selectedCards = Enumerable.Range(0, CompleteDeck.Count)
+            var selectedCardsIndexes = Enumerable.Range(0, CompleteDeck.Count)
                                   .OrderBy(i => random.Next())
                                   .Take(8)
                                   .ToList();
-            YourHand = selectedCards.Select(i => CompleteDeck[i]).ToList();
+            YourHand = selectedCardsIndexes.Select(i => CompleteDeck[i]).ToList();
 
-            var alteredDeck = CompleteDeck.Except(YourHand).ToList();
+            DrawDeckCard = CompleteDeck[random.Next(0, CompleteDeck.Count)];
 
-            YourDiscard = new List<Card>
-            {
-                alteredDeck[random.Next(0, alteredDeck.Count)]
-            };
-
-            PlayerDiscardA = new List<Card>
-            {
-                alteredDeck[random.Next(0, alteredDeck.Count -1)]
-            };
-
-            PlayerDiscardB = new List<Card>
-            {
-                alteredDeck[random.Next(0, alteredDeck.Count -2)]
-            };
-
-            PlayerDiscardC = new List<Card>
-            {
-                alteredDeck[random.Next(0, alteredDeck.Count -3)]
-            };
-
-            DrawDeck = alteredDeck;
-
-            ActiveCard = DrawDeck[random.Next(0, DrawDeck.Count)];
+            ActiveCard = DrawDeckCard;
 
             Id = Guid.NewGuid();
-        }
+        }        
 
-        private List<Card> CompleteDeck = new List<Card>
-        {
+        [Key]
+        public Guid Id { get; init; }
+
+        public Card ActiveCard { get; set; }
+
+        public Card DrawDeckCard { get; set; }
+
+        public List<Card> YourHand { get; set; } = [];
+
+        public List<Card> YourDiscard { get; set; } = [];
+
+        public List<Card> PlayerDiscardA { get; set; } = [];
+
+        public List<Card> PlayerDiscardB { get; set; } = [];
+
+        public List<Card> PlayerDiscardC { get; set; } = [];
+
+        private List<Card> CompleteDeck =
+        [
             new Card(CardType.Meat, "Rolled Beef"),
             new Card(CardType.Meat, "Beef Rib"),
             new Card(CardType.Meat, "Steak"),
@@ -70,23 +65,6 @@ namespace nabegemu.Database.Models
             new Card(CardType.Spices, "Garlic"),
             new Card(CardType.Spices, "Ginger"),
             new Card(CardType.Spices, "Dari Cloves")
-        };
-
-        [Key]
-        public Guid Id { get; init; }
-
-        public Card ActiveCard { get; set; }
-
-        public List<Card> DrawDeck { get; set; } = new List<Card>();
-
-        public List<Card> YourHand { get; set; } = new List<Card>();
-
-        public List<Card> YourDiscard { get; set; } = new List<Card>();
-
-        public List<Card> PlayerDiscardA { get; set; } = new List<Card>();
-
-        public List<Card> PlayerDiscardB { get; set; } = new List<Card>();
-
-        public List<Card> PlayerDiscardC { get; set; } = new List<Card>();
+        ];
     }
 }
