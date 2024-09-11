@@ -13,7 +13,52 @@
     <div class="flex flex-col items-center">
         <div>
             <div data-selection-area>
-                <div data-discard-area>
+                <div data-discard-area
+                     class="flex space-x-4 mb-2">
+                     @if (kitchenThings.YourDiscard.Any())
+                     {
+                        var lastCard = kitchenThings.YourDiscard.Last();
+
+                        <div data-draw-deck class="border border-black rounded-lg bg-@(lastCard.Colour.ToString().ToLower())-200 w-28 h-48 p-1.5 text-sm flex flex-col justify-between">
+                            <div class="flex justify-end">
+                                <div class="border border-black rounded-lg">
+                                    <img src="/icons/@(lastCard.Type.ToString().ToLower()).png"
+                                         class="h-7 w-auto"
+                                         alt="@lastCard.Type.ToString()"
+                                         aria-label="@lastCard.Type.ToString()" />
+                                </div>
+                            </div>
+                            <div class="flex justify-center">
+                                <div>
+                                    <img src="/images/@(lastCard.ImageName).png"
+                                         class="h-15 w-auto"
+                                         alt="@lastCard.Name"
+                                         aria-label="@lastCard.Name" />
+                                </div>
+                            </div>
+                            <div class="flex justify-start">
+                                <div class="border border-black rounded-lg">
+                                    <img src="/icons/@(lastCard.Type.ToString().ToLower()).png"
+                                         class="h-7 w-auto"
+                                         alt="@lastCard.Type.ToString()"
+                                         aria-label="@lastCard.Type.ToString()" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div data-draw-deck class="border border-red-900 rounded-lg bg-white w-28 h-48 p-1.5 text-sm flex flex-col justify-between">
+                            <div class="flex justify-center">
+                                <div>
+                                    <img src="/images/hot-pot-cute-logo-1.jpeg"
+                                         class="h-15 w-auto"
+                                         alt="Game Logo"
+                                         aria-label="Back of card showing game logo" />
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
 
                 <div data-draw-area
@@ -49,32 +94,32 @@
 
             <div data-active-card-area
                  class="flex space-x-4 mb-2">
-                <div data-active-card class="border border-black rounded-lg bg-@(activeCard.Colour.ToString().ToLower())-200 w-28 h-48 p-1.5 text-sm flex flex-col justify-between">
-                    <div class="flex justify-end">
-                        <div class="border border-black rounded-lg">
-                            <img src="/icons/@(activeCard.Type.ToString().ToLower()).png"
-                                 class="h-7 w-auto"
-                                 alt="@activeCard.Type.ToString()"
-                                 aria-label="@activeCard.Type.ToString()" />
+                    <div data-active-card class="border border-black rounded-lg bg-@(activeCard.Colour.ToString().ToLower())-200 w-28 h-48 p-1.5 text-sm flex flex-col justify-between">
+                        <div class="flex justify-end">
+                            <div class="border border-black rounded-lg">
+                                <img src="/icons/@(activeCard.Type.ToString().ToLower()).png"
+                                     class="h-7 w-auto"
+                                     alt="@activeCard.Type.ToString()"
+                                     aria-label="@activeCard.Type.ToString()" />
+                            </div>
+                        </div>
+                        <div class="flex justify-center">
+                            <div>
+                                <img src="/images/@(activeCard.ImageName).png"
+                                     class="h-15 w-auto"
+                                     alt="@activeCard.Name"
+                                     aria-label="@activeCard.Name" />
+                            </div>
+                        </div>
+                        <div class="flex justify-start">
+                            <div class="border border-black rounded-lg">
+                                <img src="/icons/@(activeCard.Type.ToString().ToLower()).png"
+                                     class="h-7 w-auto"
+                                     alt="@activeCard.Type.ToString()"
+                                     aria-label="@activeCard.Type.ToString()" />
+                            </div>
                         </div>
                     </div>
-                    <div class="flex justify-center">
-                        <div>
-                            <img src="/images/@(activeCard.ImageName).png"
-                                 class="h-15 w-auto"
-                                 alt="@activeCard.Name"
-                                 aria-label="@activeCard.Name" />
-                        </div>
-                    </div>
-                    <div class="flex justify-start">
-                        <div class="border border-black rounded-lg">
-                            <img src="/icons/@(activeCard.Type.ToString().ToLower()).png"
-                                 class="h-7 w-auto"
-                                 alt="@activeCard.Type.ToString()"
-                                 aria-label="@activeCard.Type.ToString()" />
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 
