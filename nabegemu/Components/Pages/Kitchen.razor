@@ -207,18 +207,22 @@
                 </div>
             </div>
 
-            <div data-draw-area class="flex space-x-4 mb-2 justify-center">
-                <div data-draw-deck class="border-2 border-black rounded-lg bg-orange-100 w-28 h-48 p-1.5 text-sm flex flex-col justify-center cursor-pointer">
-                    <div class="flex justify-center">
-                        <div>
-                            <img src="/images/hot-pot-cute-logo-1.png"
-                            class="h-15 w-auto"
-                            alt="Game Logo"
-                            aria-label="Back of card showing game logo" />
+            @if (canDrawCard) {
+                <div data-draw-area class="flex space-x-4 mb-2 justify-center">
+                    <div data-draw-deck
+                    class="border-2 border-black rounded-lg bg-orange-100 w-28 h-48 p-1.5 text-sm flex flex-col justify-center cursor-pointer"
+                    onclick="DrawCard()">
+                        <div class="flex justify-center">
+                            <div>
+                                <img src="/images/hot-pot-cute-logo-1.png"
+                                class="h-15 w-auto"
+                                alt="Game Logo"
+                                aria-label="Back of card showing game logo" />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
         </div>
 
         <div data-active-card-area class="flex space-x-4 mb-2 justify-center">
@@ -252,36 +256,36 @@
 
         <div data-your-deck-area
         class="flex space-x-4 mb-2 justify-center border-2 border-gray-200 rounded-lg py-10 bg-slate-100">
-        @foreach (var card in kitchenThings.YourHand)
-        {
-                        <div data-your-deck-card
-                        class="border-2 border-black rounded-lg bg-@(card.Colour.ToString().ToLower())-200 w-28 h-48 p-1.5 text-sm flex flex-col justify-between">
-                            <div class="flex justify-end">
-                                <div>
-                                    <img src="/icons/@(card.Type.ToString().ToLower()).png"
-                                    class="h-7 w-auto"
-                                    alt="@card.Type.ToString()"
-                                    aria-label="@card.Type.ToString()" />
-                                </div>
-                            </div>
-                            <div class="flex justify-center">
-                                <div>
-                                    <img src="/images/@(card.ImageName).png"
-                                    class="h-15 w-auto"
-                                    alt="@card.Name"
-                                    aria-label="@card.Name" />
-                                </div>
-                            </div>
-                            <div class="flex justify-start">
-                                <div>
-                                    <img src="/icons/@(card.Type.ToString().ToLower()).png"
-                                    class="h-7 w-auto"
-                                    alt="@card.Type.ToString()"
-                                    aria-label="@card.Type.ToString()" />
-                                </div>
-                            </div>
+            @foreach (var card in kitchenThings.YourHand)
+            {
+                <div data-your-deck-card
+                class="border-2 border-black rounded-lg bg-@(card.Colour.ToString().ToLower())-200 w-28 h-48 p-1.5 text-sm flex flex-col justify-between">
+                    <div class="flex justify-end">
+                        <div>
+                            <img src="/icons/@(card.Type.ToString().ToLower()).png"
+                            class="h-7 w-auto"
+                            alt="@card.Type.ToString()"
+                            aria-label="@card.Type.ToString()" />
                         </div>
-        }
+                    </div>
+                    <div class="flex justify-center">
+                        <div>
+                            <img src="/images/@(card.ImageName).png"
+                            class="h-15 w-auto"
+                            alt="@card.Name"
+                            aria-label="@card.Name" />
+                        </div>
+                    </div>
+                    <div class="flex justify-start">
+                        <div>
+                            <img src="/icons/@(card.Type.ToString().ToLower()).png"
+                            class="h-7 w-auto"
+                            alt="@card.Type.ToString()"
+                            aria-label="@card.Type.ToString()" />
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 }
@@ -293,6 +297,7 @@
     private string playerId = string.Empty;
     private string playerName = string.Empty;
     private bool dataLoaded;
+    private bool canDrawCard = true;
     private Card activeCard;
 
     protected override async Task OnInitializedAsync()
@@ -308,7 +313,6 @@
             gameCode = player.Code;
             playerId = player.Id.ToString();
             playerName = player.Name;
-            activeCard = kitchenThings.ActiveCard;
 
             await InvokeAsync(StateHasChanged);
         });
@@ -327,6 +331,13 @@
 
             await hubConnection.SendAsync("PrepKitchen", gameCode, playerId);
         }
+    }
+
+    private async Task DrawCard()
+    {
+        activeCard = kitchenThings.DrawDeckCard;
+        canDrawCard = false;
+        await InvokeAsync(StateHasChanged);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
