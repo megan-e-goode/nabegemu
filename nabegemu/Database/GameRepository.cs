@@ -99,8 +99,6 @@ namespace nabegemu.Database
 
             kitchenThings.DrawDeckCard = kitchenThings.CompleteDeck[random.Next(0, kitchenThings.CompleteDeck.Count)];
 
-            kitchenThings.ActiveCard = kitchenThings.CompleteDeck[random.Next(0, kitchenThings.CompleteDeck.Count)];
-
             return kitchenThings;
         }
 
