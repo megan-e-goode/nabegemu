@@ -8,6 +8,8 @@ namespace nabegemu.Database.Models
         [Key]
         public Guid Id { get; init; }
 
+        public Guid AssociatedPlayerId { get; set; }
+
         public Card ActiveCard { get; set; }
 
         public Card DrawDeckCard { get; set; }

@@ -75,19 +75,23 @@ namespace nabegemu.Database
 
         private Player CreatePlayer(int gameId, string playerName)
         {
-            return new Player
+            var player = new Player
             {
                 Name = playerName,
                 Code = gameId,
-                KitchenThings = GenerateKitchenThings()
             };
+
+            player.KitchenThings = GenerateKitchenThings(player.Id);
+
+            return player;
         }
 
-        private KitchenThings GenerateKitchenThings()
+        private KitchenThings GenerateKitchenThings(Guid playerId)
         {
             KitchenThings kitchenThings = new KitchenThings
             {
-                Id = Guid.NewGuid()
+                Id = Guid.NewGuid(),
+                AssociatedPlayerId = playerId,
             };
 
             Random random = new Random();
@@ -104,35 +108,32 @@ namespace nabegemu.Database
 
         private Game? GetAllGameData(GameContext context, int gameId)
         {
-            return context.Games
-                .Include(game => game.Players)
-                    .ThenInclude(player => player.KitchenThings)
-                    .ThenInclude(kitchenThings => kitchenThings.ActiveCard)
-                .Include(game => game.Players)
-                    .ThenInclude(player => player.KitchenThings)
-                    .ThenInclude(kitchenThings => kitchenThings.DrawDeckCard)
-                .Include(game => game.Players)
-                    .ThenInclude(player => player.KitchenThings)
-                    .ThenInclude(kitchenThings => kitchenThings.YourHand)
-                .Include(game => game.Players)
-                    .ThenInclude(player => player.KitchenThings)
-                    .ThenInclude(kitchenThings => kitchenThings.YourDiscard)
-                .Include(game => game.Players)
-                    .ThenInclude(player => player.KitchenThings)
-                    .ThenInclude(kitchenThings => kitchenThings.PlayerDiscardA)
-                .Include(game => game.Players)
-                    .ThenInclude(player => player.KitchenThings)
-                    .ThenInclude(kitchenThings => kitchenThings.PlayerDiscardB)
-                .Include(game => game.Players)
-                    .ThenInclude(player => player.KitchenThings)
-                    .ThenInclude(kitchenThings => kitchenThings.PlayerDiscardC)
-                .Include(game => game.Players)
-                    .ThenInclude(player => player.KitchenThings)
-                    .ThenInclude(kitchenThings => kitchenThings.YourDiscard)
-                .Include(game => game.Players)
-                    .ThenInclude(player => player.KitchenThings)
-                    .ThenInclude(kitchenThings => kitchenThings.CompleteDeck)
-                .FirstOrDefault(x => x.GameId == gameId);
+            var game = context.Games
+                .First(x => x.GameId == gameId);
+
+            var players = context.Players
+                .Where(x => x.Code == gameId)
+                .ToList();
+
+            foreach (var player in players)
+            {
+                player.KitchenThings = context.KitchenThings
+                    .Include(x => x.DrawDeckCard)
+                    .Include(x => x.YourHand)
+                    .Include(x => x.YourDiscard)
+                    .Include(x => x.PlayerDiscardA)
+                    .Include(x => x.PlayerDiscardB)
+                    .Include(x => x.PlayerDiscardC)
+                    .First(x => x.AssociatedPlayerId == player.Id);
+            }
+
+            Game fullGameData = new Game
+            {
+                GameId = game.GameId,
+                Players = players,
+            };
+
+            return fullGameData;
         }
     }
 }

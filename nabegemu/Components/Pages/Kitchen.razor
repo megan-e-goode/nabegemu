@@ -225,34 +225,36 @@
             }
         </div>
 
-        <div data-active-card-area class="flex space-x-4 mb-2 justify-center">
-            <div data-active-card class="border-2 border-black rounded-lg bg-@(activeCard.Colour.ToString().ToLower())-200 w-28 h-48 p-1.5 text-sm flex flex-col justify-between">
-                <div class="flex justify-end">
-                    <div>
-                        <img src="/icons/@(activeCard.Type.ToString().ToLower()).png"
-                        class="h-7 w-auto"
-                        alt="@activeCard.Type.ToString()"
-                        aria-label="@activeCard.Type.ToString()" />
+        @if (activeCard is not null) {
+            <div data-active-card-area class="flex space-x-4 mb-2 justify-center">
+                <div data-active-card class="border-2 border-black rounded-lg bg-@(activeCard.Colour.ToString().ToLower())-200 w-28 h-48 p-1.5 text-sm flex flex-col justify-between">
+                    <div class="flex justify-end">
+                        <div>
+                            <img src="/icons/@(activeCard.Type.ToString().ToLower()).png"
+                                 class="h-7 w-auto"
+                                 alt="@activeCard.Type.ToString()"
+                                 aria-label="@activeCard.Type.ToString()" />
+                        </div>
                     </div>
-                </div>
-                <div class="flex justify-center">
-                    <div>
-                        <img src="/images/@(activeCard.ImageName).png"
-                        class="h-15 w-auto"
-                        alt="@activeCard.Name"
-                        aria-label="@activeCard.Name" />
+                    <div class="flex justify-center">
+                        <div>
+                            <img src="/images/@(activeCard.ImageName).png"
+                                 class="h-15 w-auto"
+                                 alt="@activeCard.Name"
+                                 aria-label="@activeCard.Name" />
+                        </div>
                     </div>
-                </div>
-                <div class="flex justify-start">
-                    <div>
-                        <img src="/icons/@(activeCard.Type.ToString().ToLower()).png"
-                        class="h-7 w-auto"
-                        alt="@activeCard.Type.ToString()"
-                        aria-label="@activeCard.Type.ToString()" />
+                    <div class="flex justify-start">
+                        <div>
+                            <img src="/icons/@(activeCard.Type.ToString().ToLower()).png"
+                                 class="h-7 w-auto"
+                                 alt="@activeCard.Type.ToString()"
+                                 aria-label="@activeCard.Type.ToString()" />
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        }
 
         <div data-your-deck-area
         class="flex space-x-4 mb-2 justify-center border-2 border-gray-200 rounded-lg py-10 bg-slate-100">
