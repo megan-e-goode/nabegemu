@@ -231,25 +231,25 @@
                     <div class="flex justify-end">
                         <div>
                             <img src="/icons/@(activeCard.Type.ToString().ToLower()).png"
-                                 class="h-7 w-auto"
-                                 alt="@activeCard.Type.ToString()"
-                                 aria-label="@activeCard.Type.ToString()" />
+                            class="h-7 w-auto"
+                            alt="@activeCard.Type.ToString()"
+                            aria-label="@activeCard.Type.ToString()" />
                         </div>
                     </div>
                     <div class="flex justify-center">
                         <div>
                             <img src="/images/@(activeCard.ImageName).png"
-                                 class="h-15 w-auto"
-                                 alt="@activeCard.Name"
-                                 aria-label="@activeCard.Name" />
+                            class="h-15 w-auto"
+                            alt="@activeCard.Name"
+                            aria-label="@activeCard.Name" />
                         </div>
                     </div>
                     <div class="flex justify-start">
                         <div>
                             <img src="/icons/@(activeCard.Type.ToString().ToLower()).png"
-                                 class="h-7 w-auto"
-                                 alt="@activeCard.Type.ToString()"
-                                 aria-label="@activeCard.Type.ToString()" />
+                            class="h-7 w-auto"
+                            alt="@activeCard.Type.ToString()"
+                            aria-label="@activeCard.Type.ToString()" />
                         </div>
                     </div>
                 </div>
@@ -299,7 +299,7 @@
     private string playerId = string.Empty;
     private string playerName = string.Empty;
     private bool dataLoaded;
-    private bool canDrawCard = true;
+    private bool canDrawCard;
     private Card activeCard;
 
     protected override async Task OnInitializedAsync()
@@ -316,7 +316,21 @@
             playerId = player.Id.ToString();
             playerName = player.Name;
 
+            if (player.IsActivePlayer) {
+                canDrawCard = true;
+            }
+
             await InvokeAsync(StateHasChanged);
+        });
+
+        hubConnection.On<bool>("SetActivePlayerInSession", async (isActivePlayer) =>
+        {
+            await SessionStorage.SetAsync("IsActivePlayer", isActivePlayer);
+        });
+
+        hubConnection.On<bool>("SetInactivePlayerInSession", async (isActivePlayer) =>
+        {
+            await SessionStorage.SetAsync("IsActivePlayer", isActivePlayer);
         });
 
         await hubConnection.StartAsync();
@@ -326,11 +340,6 @@
     {
         if (hubConnection is not null)
         {
-            var sessionPlayerId = await SessionStorage.GetAsync<Guid>("PlayerId");
-            var sessionGameCode = await SessionStorage.GetAsync<int>("GameCode");
-            gameCode = sessionGameCode.Value;
-            playerId = sessionPlayerId.Value.ToString();
-
             await hubConnection.SendAsync("PrepKitchen", gameCode, playerId);
         }
     }
@@ -346,7 +355,21 @@
     {
         if (firstRender)
         {
+            var sessionPlayerId = await SessionStorage.GetAsync<Guid>("PlayerId");
+            var sessionGameCode = await SessionStorage.GetAsync<int>("GameCode");
+            gameCode = sessionGameCode.Value;
+            playerId = sessionPlayerId.Value.ToString();
+
+            await SetActivePlayer();
             await PrepKitchen();
+        }
+    }
+
+    private async Task SetActivePlayer()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("SetActivePlayerInSession", gameCode);
         }
     }
 

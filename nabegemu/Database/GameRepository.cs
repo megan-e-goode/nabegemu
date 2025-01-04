@@ -33,8 +33,10 @@ namespace nabegemu.Database
 
             newGame.Players = new List<Player>
             {
-                CreatePlayer(newGame.GameId, player.Name)
+                CreatePlayer(newGame.GameId, player.Name, true)
             };
+
+            newGame.ActivePlayer = newGame.Players[0];
 
             context.Games.Add(newGame);
 
@@ -61,6 +63,16 @@ namespace nabegemu.Database
             return newPlayer;
         }
 
+        public List<Player> GetPlayers(int gameId)
+        {
+            using var context = new GameContext();
+
+            var game = GetAllGameData(context, gameId)
+                ?? throw new Exception("Game not found");
+
+            return game.Players;
+        }
+
         public Player GetPlayer(int gameId, Guid playerId)
         {
             using var context = new GameContext();
@@ -73,12 +85,23 @@ namespace nabegemu.Database
             return player;
         }
 
-        private Player CreatePlayer(int gameId, string playerName)
+        public Player GetActivePlayer(int gameId)
+        {
+            using var context = new GameContext();
+
+            var game = GetAllGameData(context, gameId)
+                ?? throw new Exception("Game not found");
+
+            return game.Players.First(x => x.IsActivePlayer == true);
+        }
+
+        private Player CreatePlayer(int gameId, string playerName, bool activePlayer = false)
         {
             var player = new Player
             {
                 Name = playerName,
                 Code = gameId,
+                IsActivePlayer = activePlayer,
             };
 
             player.KitchenThings = GenerateKitchenThings(player.Id);

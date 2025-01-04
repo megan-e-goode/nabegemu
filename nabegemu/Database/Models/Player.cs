@@ -21,6 +21,8 @@ namespace nabegemu.Database.Models
 
         public int Score { get; set; }
 
+        public bool IsActivePlayer { get; set; }
+
         public KitchenThings KitchenThings { get; set; }
     }
 }

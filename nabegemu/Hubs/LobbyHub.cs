@@ -45,4 +45,17 @@ public class LobbyHub : Hub
 
         await Clients.Caller.SendAsync("PrepKitchenComplete", player);
     }
+
+    public async Task SetActivePlayerInSession(int gameCode)
+    {
+        var activePlayer = _gameRepository.GetActivePlayer(gameCode);
+        var inactivePlayers = _gameRepository.GetPlayers(gameCode).Where(player => player.IsActivePlayer == false);
+
+        await Clients.Group($"player-{activePlayer.Id}").SendAsync("SetActivePlayerInSession", true);
+
+        foreach (var player in inactivePlayers)
+        {
+            await Clients.Group($"player-{player.Id}").SendAsync("SetInactivePlayerInSession", false);
+        }
+    }
 }

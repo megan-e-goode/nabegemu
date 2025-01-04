@@ -12,6 +12,10 @@ namespace nabegemu.Database.Interfaces
 
         Player AddPlayerToGame(int gameId, string playerName);
 
+        List<Player> GetPlayers(int gameId);
+
         Player GetPlayer(int gameId, Guid playerId);
+
+        Player GetActivePlayer(int gameId);
     }
 }
