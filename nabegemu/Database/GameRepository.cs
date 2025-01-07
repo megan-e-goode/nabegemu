@@ -36,8 +36,6 @@ namespace nabegemu.Database
                 CreatePlayer(newGame.GameId, player.Name, true)
             };
 
-            newGame.ActivePlayer = newGame.Players[0];
-
             context.Games.Add(newGame);
 
             context.SaveChanges();
@@ -91,6 +89,26 @@ namespace nabegemu.Database
 
             var game = GetAllGameData(context, gameId)
                 ?? throw new Exception("Game not found");
+
+            return game.Players.First(x => x.IsActivePlayer == true);
+        }
+
+        public Player SetNextActivePlayer(int gameId)
+        {
+            using var context = new GameContext();
+
+            var game = GetAllGameData(context, gameId)
+                ?? throw new Exception("Game not found");
+
+            var currentActivePlayer = game.Players.First(x => x.IsActivePlayer == true);
+            var currentActivePlayerIndex = game.Players.IndexOf(currentActivePlayer);            
+
+            currentActivePlayer.IsActivePlayer = false;
+
+            var nextActivePlayerIndex = (currentActivePlayerIndex + 1) % game.Players.Count;
+            game.Players[nextActivePlayerIndex].IsActivePlayer = true;
+
+            context.SaveChanges();
 
             return game.Players.First(x => x.IsActivePlayer == true);
         }

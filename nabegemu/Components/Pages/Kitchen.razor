@@ -300,6 +300,7 @@
     private string playerName = string.Empty;
     private bool dataLoaded;
     private bool canDrawCard;
+    private bool isDeckModificationModeActive;
     private Card activeCard;
 
     protected override async Task OnInitializedAsync()
@@ -348,6 +349,7 @@
     {
         activeCard = kitchenThings.DrawDeckCard;
         canDrawCard = false;
+        isDeckModificationModeActive = true;
         await InvokeAsync(StateHasChanged);
     }
 

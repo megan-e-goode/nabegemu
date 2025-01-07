@@ -13,7 +13,5 @@ namespace nabegemu.Database.Models
         public int GameId { get; init; }
 
         public List<Player> Players { get; set; }
-
-        public Player ActivePlayer { get; set; }
     }
 }
