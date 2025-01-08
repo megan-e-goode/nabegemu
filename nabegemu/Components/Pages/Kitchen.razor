@@ -4,9 +4,39 @@
 @inject ProtectedSessionStorage SessionStorage
 @implements IAsyncDisposable
 
-<h3>Kitchen</h3>
-<h4>Game code: @gameCode</h4>
-<h4>Player Name: @playerName</h4>
+<div class="flex align-items-center content-center">
+    <h3>Kitchen</h3>
+</div>
+
+<div class="flex items-end flex-direction--column">
+    <div class="flex items-center mb-2">
+        <div class="min-w-[150px] relative">
+            <div class="flex items-center peer w-full p-2 bg-inherit border-2 rounded-md outline-none transition border-black text-black"
+                 type="text"
+                 id="gameCode">
+                <span>Game code: @gameCode</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex items-center mb-2">
+        <div class="min-w-[150px] relative">
+            <div class="flex items-center peer w-full p-2 bg-inherit border-2 rounded-md outline-none transition border-black text-black"
+                 type="text"
+                 id="playerName">
+                <svg class="mr-2"
+                     fill=""
+                     width="18"
+                     height="18"
+                     viewBox="0 0 344 384">
+                    <path d="M170.5 192q-35.5 0-60.5-25t-25-60.5T110 46t60.5-25T231 46t25 60.5t-25 60.5t-60.5 25zm0 43q31.5 0 69.5 9t69.5 29.5T341 320v43H0v-43q0-26 31.5-46.5T101 244t69.5-9z"
+                          fill="gray"></path>
+                </svg>
+                <span>@playerName</span>
+            </div>
+        </div>
+    </div>
+</div>
 
 @if (dataLoaded)
 {
