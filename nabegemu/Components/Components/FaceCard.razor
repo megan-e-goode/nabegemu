@@ -1,5 +1,16 @@
 ﻿<div data-attribute="@DataAttribute"
-     class="border-2 border-black rounded-lg bg-@(CardData.Colour.ToString().ToLower())-200 w-28 h-48 p-1.5 text-sm flex flex-col justify-between">
+     class="border-2 
+            border-black 
+            rounded-lg 
+            bg-@(CardData.Colour.ToString().ToLower())-200 
+            w-28 
+            h-48 
+            p-1.5 
+            text-sm 
+            flex 
+            flex-col 
+            justify-between
+            @(IsDeckModificationModeActive ? "hover:animate-bounce cursor-pointer" : "cursor-default")">
     <div class="flex justify-end">
         <div>
             <img src="/icons/@(CardData.Type.ToString().ToLower()).png"
@@ -30,6 +41,10 @@
     [Parameter]
     [EditorRequired]
     public required nabegemu.Database.Models.Card CardData { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public bool IsDeckModificationModeActive { get; set; }
 
     [Parameter]
     public string DataAttribute { get; set; } = string.Empty;

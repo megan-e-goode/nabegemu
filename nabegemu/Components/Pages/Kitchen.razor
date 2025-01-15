@@ -48,7 +48,7 @@
                     @if (kitchenThings.PlayerDiscardA.Any())
                     {
                         var lastCard = kitchenThings.PlayerDiscardA.Last();
-                        <FaceCard CardData="@lastCard" DataAttribute="draw-deck" />
+                        <FaceCard CardData="@lastCard" IsDeckModificationModeActive="@isDeckModificationModeActive" DataAttribute="draw-deck" />
                     }
                     else
                     {
@@ -61,7 +61,7 @@
                     @if (kitchenThings.PlayerDiscardB.Any())
                     {
                         var lastCard = kitchenThings.PlayerDiscardB.Last();
-                        <FaceCard CardData="@lastCard" DataAttribute="draw-deck" />
+                        <FaceCard CardData="@lastCard" IsDeckModificationModeActive="@isDeckModificationModeActive" DataAttribute="draw-deck" />
                     }
                     else
                     {
@@ -74,7 +74,7 @@
                     @if (kitchenThings.PlayerDiscardC.Any())
                     {
                         var lastCard = kitchenThings.PlayerDiscardC.Last();
-                        <FaceCard CardData="@lastCard" DataAttribute="draw-deck" />
+                        <FaceCard CardData="@lastCard" IsDeckModificationModeActive="@isDeckModificationModeActive" DataAttribute="draw-deck" />
                     }
                     else
                     {
@@ -87,7 +87,7 @@
                     @if (kitchenThings.YourDiscard.Any())
                     {
                         var lastCard = kitchenThings.YourDiscard.Last();
-                        <FaceCard CardData="@lastCard" DataAttribute="draw-deck" />
+                        <FaceCard CardData="@lastCard" IsDeckModificationModeActive="@isDeckModificationModeActive" DataAttribute="draw-deck" />
                     }
                     else
                     {
@@ -117,7 +117,7 @@
 
         @if (activeCard is not null) {
             <div data-active-card-area class="flex space-x-4 mb-2 justify-center">
-                <FaceCard CardData="@activeCard" DataAttribute="active-card" />
+                <FaceCard CardData="@activeCard" IsDeckModificationModeActive="false" DataAttribute="active-card" />
             </div>
         }
 
@@ -125,7 +125,7 @@
              class="flex space-x-4 mb-2 justify-center border-2 border-gray-200 rounded-lg py-10 bg-slate-100">
             @foreach (var card in kitchenThings.YourHand)
             {
-                <FaceCard CardData="@card" DataAttribute="your-deck-card" />
+                <FaceCard CardData="@card" IsDeckModificationModeActive="@isDeckModificationModeActive" DataAttribute="your-deck-card" />
             }
         </div>
     </div>
