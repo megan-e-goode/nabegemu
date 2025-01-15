@@ -1,0 +1,36 @@
+﻿<div data-attribute="@DataAttribute"
+     class="border-2 border-black rounded-lg bg-@(CardData.Colour.ToString().ToLower())-200 w-28 h-48 p-1.5 text-sm flex flex-col justify-between">
+    <div class="flex justify-end">
+        <div>
+            <img src="/icons/@(CardData.Type.ToString().ToLower()).png"
+                 class="h-7 w-auto"
+                 alt="@CardData.Type.ToString()"
+                 aria-label="@CardData.Type.ToString()" />
+        </div>
+    </div>
+    <div class="flex justify-center">
+        <div>
+            <img src="/images/@(CardData.ImageName).png"
+                 class="h-15 w-auto"
+                 alt="@CardData.Name"
+                 aria-label="@CardData.Name" />
+        </div>
+    </div>
+    <div class="flex justify-start">
+        <div>
+            <img src="/icons/@(CardData.Type.ToString().ToLower()).png"
+                 class="h-7 w-auto"
+                 alt="@CardData.Type.ToString()"
+                 aria-label="@CardData.Type.ToString()" />
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public required nabegemu.Database.Models.Card CardData { get; set; }
+
+    [Parameter]
+    public string DataAttribute { get; set; } = string.Empty;
+}

@@ -1,0 +1,16 @@
+﻿<div data-attribute="@DataAttribute"
+     class="border-2 border-red-900 rounded-lg bg-orange-100 w-20 h-36 p-1.5 text-sm flex flex-col justify-center cursor-not-allowed">
+    <div class="flex justify-center">
+        <div>
+            <img src="/images/hot-pot-cute-logo-1.png"
+                 class="h-15 w-auto"
+                 alt="Game Logo"
+                 aria-label="Back of card showing game logo" />
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string DataAttribute { get; set; } = string.Empty;
+}

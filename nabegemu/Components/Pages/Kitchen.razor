@@ -1,5 +1,5 @@
 ﻿@page "/Kitchen"
-@rendermode InteractiveServer
+@using nabegemu.Components.Components
 @inject NavigationManager Navigation
 @inject ProtectedSessionStorage SessionStorage
 @implements IAsyncDisposable
@@ -48,46 +48,11 @@
                     @if (kitchenThings.PlayerDiscardA.Any())
                     {
                         var lastCard = kitchenThings.PlayerDiscardA.Last();
-
-                        <div data-draw-deck class="border-2 border-black rounded-lg bg-@(lastCard.Colour.ToString().ToLower())-200 w-28 h-48 p-1.5 text-sm flex flex-col justify-between">
-                            <div class="flex justify-end">
-                                <div>
-                                    <img src="/icons/@(lastCard.Type.ToString().ToLower()).png"
-                                    class="h-7 w-auto"
-                                    alt="@lastCard.Type.ToString()"
-                                    aria-label="@lastCard.Type.ToString()" />
-                                </div>
-                            </div>
-                            <div class="flex justify-center">
-                                <div>
-                                    <img src="/images/@(lastCard.ImageName).png"
-                                    class="h-15 w-auto"
-                                    alt="@lastCard.Name"
-                                    aria-label="@lastCard.Name" />
-                                </div>
-                            </div>
-                            <div class="flex justify-start">
-                                <div>
-                                    <img src="/icons/@(lastCard.Type.ToString().ToLower()).png"
-                                    class="h-7 w-auto"
-                                    alt="@lastCard.Type.ToString()"
-                                    aria-label="@lastCard.Type.ToString()" />
-                                </div>
-                            </div>
-                        </div>
+                        <FaceCard CardData="@lastCard" DataAttribute="draw-deck" />
                     }
                     else
                     {
-                        <div data-draw-deck class="border-2 border-red-900 rounded-lg bg-orange-100 w-20 h-36 p-1.5 text-sm flex flex-col justify-center cursor-not-allowed">
-                            <div class="flex justify-center">
-                                <div>
-                                    <img src="/images/hot-pot-cute-logo-1.png"
-                                    class="h-15 w-auto"
-                                    alt="Game Logo"
-                                    aria-label="Back of card showing game logo" />
-                                </div>
-                            </div>
-                        </div>
+                        <BackCard DataAttribute="draw-deck" />
                     }
                     <p>Discard A</p>
                 </div>
@@ -96,46 +61,11 @@
                     @if (kitchenThings.PlayerDiscardB.Any())
                     {
                         var lastCard = kitchenThings.PlayerDiscardB.Last();
-
-                        <div data-draw-deck class="border-2 border-black rounded-lg bg-@(lastCard.Colour.ToString().ToLower())-200 w-28 h-48 p-1.5 text-sm flex flex-col justify-between">
-                            <div class="flex justify-end">
-                                <div>
-                                    <img src="/icons/@(lastCard.Type.ToString().ToLower()).png"
-                                    class="h-7 w-auto"
-                                    alt="@lastCard.Type.ToString()"
-                                    aria-label="@lastCard.Type.ToString()" />
-                                </div>
-                            </div>
-                            <div class="flex justify-center">
-                                <div>
-                                    <img src="/images/@(lastCard.ImageName).png"
-                                    class="h-15 w-auto"
-                                    alt="@lastCard.Name"
-                                    aria-label="@lastCard.Name" />
-                                </div>
-                            </div>
-                            <div class="flex justify-start">
-                                <div>
-                                    <img src="/icons/@(lastCard.Type.ToString().ToLower()).png"
-                                    class="h-7 w-auto"
-                                    alt="@lastCard.Type.ToString()"
-                                    aria-label="@lastCard.Type.ToString()" />
-                                </div>
-                            </div>
-                        </div>
+                        <FaceCard CardData="@lastCard" DataAttribute="draw-deck" />
                     }
                     else
                     {
-                        <div data-draw-deck class="border-2 border-red-900 rounded-lg bg-orange-100 w-20 h-36 p-1.5 text-sm flex flex-col justify-center cursor-not-allowed">
-                            <div class="flex justify-center">
-                                <div>
-                                    <img src="/images/hot-pot-cute-logo-1.png"
-                                    class="h-15 w-auto"
-                                    alt="Game Logo"
-                                    aria-label="Back of card showing game logo" />
-                                </div>
-                            </div>
-                        </div>
+                        <BackCard DataAttribute="draw-deck" />
                     }
                     <p>Discard B</p>
                 </div>
@@ -144,46 +74,11 @@
                     @if (kitchenThings.PlayerDiscardC.Any())
                     {
                         var lastCard = kitchenThings.PlayerDiscardC.Last();
-
-                        <div data-draw-deck class="border-2 border-black rounded-lg bg-@(lastCard.Colour.ToString().ToLower())-200 w-28 h-48 p-1.5 text-sm flex flex-col justify-between">
-                            <div class="flex justify-end">
-                                <div>
-                                    <img src="/icons/@(lastCard.Type.ToString().ToLower()).png"
-                                    class="h-7 w-auto"
-                                    alt="@lastCard.Type.ToString()"
-                                    aria-label="@lastCard.Type.ToString()" />
-                                </div>
-                            </div>
-                            <div class="flex justify-center">
-                                <div>
-                                    <img src="/images/@(lastCard.ImageName).png"
-                                    class="h-15 w-auto"
-                                    alt="@lastCard.Name"
-                                    aria-label="@lastCard.Name" />
-                                </div>
-                            </div>
-                            <div class="flex justify-start">
-                                <div>
-                                    <img src="/icons/@(lastCard.Type.ToString().ToLower()).png"
-                                    class="h-7 w-auto"
-                                    alt="@lastCard.Type.ToString()"
-                                    aria-label="@lastCard.Type.ToString()" />
-                                </div>
-                            </div>
-                        </div>
+                        <FaceCard CardData="@lastCard" DataAttribute="draw-deck" />
                     }
                     else
                     {
-                        <div data-draw-deck class="border-2 border-red-900 rounded-lg bg-orange-100 w-20 h-36 p-1.5 text-sm flex flex-col justify-center cursor-not-allowed">
-                            <div class="flex justify-center">
-                                <div>
-                                    <img src="/images/hot-pot-cute-logo-1.png"
-                                    class="h-15 w-auto"
-                                    alt="Game Logo"
-                                    aria-label="Back of card showing game logo" />
-                                </div>
-                            </div>
-                        </div>
+                        <BackCard DataAttribute="draw-deck" />
                     }
                     <p>Discard C</p>
                 </div>
@@ -192,46 +87,11 @@
                     @if (kitchenThings.YourDiscard.Any())
                     {
                         var lastCard = kitchenThings.YourDiscard.Last();
-
-                        <div data-draw-deck class="border-2 border-black rounded-lg bg-@(lastCard.Colour.ToString().ToLower())-200 w-28 h-48 p-1.5 text-sm flex flex-col justify-between">
-                            <div class="flex justify-end">
-                                <div>
-                                    <img src="/icons/@(lastCard.Type.ToString().ToLower()).png"
-                                    class="h-7 w-auto"
-                                    alt="@lastCard.Type.ToString()"
-                                    aria-label="@lastCard.Type.ToString()" />
-                                </div>
-                            </div>
-                            <div class="flex justify-center">
-                                <div>
-                                    <img src="/images/@(lastCard.ImageName).png"
-                                    class="h-15 w-auto"
-                                    alt="@lastCard.Name"
-                                    aria-label="@lastCard.Name" />
-                                </div>
-                            </div>
-                            <div class="flex justify-start">
-                                <div>
-                                    <img src="/icons/@(lastCard.Type.ToString().ToLower()).png"
-                                    class="h-7 w-auto"
-                                    alt="@lastCard.Type.ToString()"
-                                    aria-label="@lastCard.Type.ToString()" />
-                                </div>
-                            </div>
-                        </div>
+                        <FaceCard CardData="@lastCard" DataAttribute="draw-deck" />
                     }
                     else
                     {
-                        <div data-draw-deck class="border-2 border-red-900 rounded-lg bg-orange-100 w-20 h-36 p-1.5 text-sm flex flex-col justify-center cursor-not-allowed">
-                            <div class="flex justify-center">
-                                <div>
-                                    <img src="/images/hot-pot-cute-logo-1.png"
-                                    class="h-15 w-auto"
-                                    alt="Game Logo"
-                                    aria-label="Back of card showing game logo" />
-                                </div>
-                            </div>
-                        </div>
+                        <BackCard DataAttribute="draw-deck" />
                     }
                     <p>Your Discard</p>
                 </div>
@@ -240,8 +100,8 @@
             @if (canDrawCard) {
                 <div data-draw-area class="flex space-x-4 mb-2 justify-center">
                     <div data-draw-deck
-                    class="border-2 border-black rounded-lg bg-orange-100 w-28 h-48 p-1.5 text-sm flex flex-col justify-center cursor-pointer"
-                    @onclick="DrawCard">
+                         class="border-2 border-black rounded-lg bg-orange-100 w-28 h-48 p-1.5 text-sm flex flex-col justify-center cursor-pointer"
+                         @onclick="DrawCard">
                         <div class="flex justify-center">
                             <div>
                                 <img src="/images/hot-pot-cute-logo-1.png"
@@ -257,66 +117,15 @@
 
         @if (activeCard is not null) {
             <div data-active-card-area class="flex space-x-4 mb-2 justify-center">
-                <div data-active-card class="border-2 border-black rounded-lg bg-@(activeCard.Colour.ToString().ToLower())-200 w-28 h-48 p-1.5 text-sm flex flex-col justify-between">
-                    <div class="flex justify-end">
-                        <div>
-                            <img src="/icons/@(activeCard.Type.ToString().ToLower()).png"
-                            class="h-7 w-auto"
-                            alt="@activeCard.Type.ToString()"
-                            aria-label="@activeCard.Type.ToString()" />
-                        </div>
-                    </div>
-                    <div class="flex justify-center">
-                        <div>
-                            <img src="/images/@(activeCard.ImageName).png"
-                            class="h-15 w-auto"
-                            alt="@activeCard.Name"
-                            aria-label="@activeCard.Name" />
-                        </div>
-                    </div>
-                    <div class="flex justify-start">
-                        <div>
-                            <img src="/icons/@(activeCard.Type.ToString().ToLower()).png"
-                            class="h-7 w-auto"
-                            alt="@activeCard.Type.ToString()"
-                            aria-label="@activeCard.Type.ToString()" />
-                        </div>
-                    </div>
-                </div>
+                <FaceCard CardData="@activeCard" DataAttribute="active-card" />
             </div>
         }
 
         <div data-your-deck-area
-        class="flex space-x-4 mb-2 justify-center border-2 border-gray-200 rounded-lg py-10 bg-slate-100">
+             class="flex space-x-4 mb-2 justify-center border-2 border-gray-200 rounded-lg py-10 bg-slate-100">
             @foreach (var card in kitchenThings.YourHand)
             {
-                <div data-your-deck-card
-                class="border-2 border-black rounded-lg bg-@(card.Colour.ToString().ToLower())-200 w-28 h-48 p-1.5 text-sm flex flex-col justify-between">
-                    <div class="flex justify-end">
-                        <div>
-                            <img src="/icons/@(card.Type.ToString().ToLower()).png"
-                            class="h-7 w-auto"
-                            alt="@card.Type.ToString()"
-                            aria-label="@card.Type.ToString()" />
-                        </div>
-                    </div>
-                    <div class="flex justify-center">
-                        <div>
-                            <img src="/images/@(card.ImageName).png"
-                            class="h-15 w-auto"
-                            alt="@card.Name"
-                            aria-label="@card.Name" />
-                        </div>
-                    </div>
-                    <div class="flex justify-start">
-                        <div>
-                            <img src="/icons/@(card.Type.ToString().ToLower()).png"
-                            class="h-7 w-auto"
-                            alt="@card.Type.ToString()"
-                            aria-label="@card.Type.ToString()" />
-                        </div>
-                    </div>
-                </div>
+                <FaceCard CardData="@card" DataAttribute="your-deck-card" />
             }
         </div>
     </div>
