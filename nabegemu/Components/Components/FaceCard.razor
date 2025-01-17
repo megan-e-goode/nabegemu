@@ -1,4 +1,4 @@
-﻿<div data-attribute="@DataAttribute"
+﻿<button data-attribute="@DataAttribute"
      class="border-2 
             border-black 
             rounded-lg 
@@ -10,7 +10,8 @@
             flex 
             flex-col 
             justify-between
-            @(IsDeckModificationModeActive ? "hover:animate-bounce cursor-pointer" : "cursor-default")">
+            @(IsDeckModificationModeActive ? "hover:animate-bounce cursor-pointer" : "cursor-default")"
+            @onclick="OnClickCallback">
     <div class="flex justify-end">
         <div>
             <img src="/icons/@(CardData.Type.ToString().ToLower()).png"
@@ -35,7 +36,7 @@
                  aria-label="@CardData.Type.ToString()" />
         </div>
     </div>
-</div>
+</button>
 
 @code {
     [Parameter]
@@ -48,4 +49,7 @@
 
     [Parameter]
     public string DataAttribute { get; set; } = string.Empty;
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClickCallback { get; set; }
 }
