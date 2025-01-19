@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nabegemu.Tests", "nabegemu.Tests2\nabegemu.Tests.csproj", "{57D734BE-3DEC-46F7-8500-13A270E028DD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nabegemu.Tests", "nabegemu.Tests\nabegemu.Tests.csproj", "{250F34EA-0EE6-4FA5-BAE6-92DC0652ED9B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,10 +22,10 @@ Global
 		{3C988718-E240-46BC-B3AD-A195AD71699E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C988718-E240-46BC-B3AD-A195AD71699E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C988718-E240-46BC-B3AD-A195AD71699E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{57D734BE-3DEC-46F7-8500-13A270E028DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{57D734BE-3DEC-46F7-8500-13A270E028DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{57D734BE-3DEC-46F7-8500-13A270E028DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{57D734BE-3DEC-46F7-8500-13A270E028DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{250F34EA-0EE6-4FA5-BAE6-92DC0652ED9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{250F34EA-0EE6-4FA5-BAE6-92DC0652ED9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{250F34EA-0EE6-4FA5-BAE6-92DC0652ED9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{250F34EA-0EE6-4FA5-BAE6-92DC0652ED9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
