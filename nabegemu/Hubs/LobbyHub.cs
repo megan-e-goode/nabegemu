@@ -2,7 +2,7 @@
 using nabegemu.Database.Models;
 
 namespace nabegemu.Hubs;
-public class LobbyHub : Hub
+public class LobbyHub : Hub, ILobbyHub
 {
     readonly IGameRepository _gameRepository;
 
@@ -56,6 +56,21 @@ public class LobbyHub : Hub
         foreach (var player in inactivePlayers)
         {
             await Clients.Group($"player-{player.Id}").SendAsync("SetInactivePlayerInSession", false);
+        }
+    }
+
+    public async Task SwapWithActiveCard(int gameCode, Guid playerId, List<Card> newHand)
+    {
+        var player = _gameRepository.GetPlayer(gameCode, playerId);
+        var result = _gameRepository.SwapWithActiveCard(gameCode, playerId, newHand);
+
+        if(result)
+        {
+            await Clients.Caller.SendAsync("SwapWithActiveCardComplete", result);
+        }
+        else
+        {
+            throw new Exception($"Failed to swap cards on player: {player.Name}");
         }
     }
 }

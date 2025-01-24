@@ -17,5 +17,7 @@ namespace nabegemu.Database.Interfaces
         Player GetPlayer(int gameId, Guid playerId);
 
         Player GetActivePlayer(int gameId);
+
+        bool SwapWithActiveCard(int gameId, Guid playerId, List<Card> newHand);
     }
 }

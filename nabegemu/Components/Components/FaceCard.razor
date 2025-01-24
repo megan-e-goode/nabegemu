@@ -1,4 +1,6 @@
-﻿<button data-attribute="@DataAttribute"
+﻿@using nabegemu.Database.Models
+
+<button data-attribute="@DataAttribute"
      class="border-2 
             border-black 
             rounded-lg 
@@ -11,7 +13,7 @@
             flex-col 
             justify-between
             @(IsDeckModificationModeActive ? "hover:animate-bounce cursor-pointer" : "cursor-default")"
-            @onclick="OnClickCallback">
+            @onclick="@OnClickCallbackTrigger">
     <div class="flex justify-end">
         <div>
             <img src="/icons/@(CardData.Type.ToString().ToLower()).png"
@@ -41,7 +43,7 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public required nabegemu.Database.Models.Card CardData { get; set; }
+    public required Card CardData { get; set; }
 
     [Parameter]
     [EditorRequired]
@@ -51,5 +53,10 @@
     public string DataAttribute { get; set; } = string.Empty;
 
     [Parameter]
-    public EventCallback<MouseEventArgs> OnClickCallback { get; set; }
+    public EventCallback<Card> OnClickCallback { get; set; }
+
+    private async Task OnClickCallbackTrigger()
+    {
+        await OnClickCallback.InvokeAsync(CardData);
+    }
 }

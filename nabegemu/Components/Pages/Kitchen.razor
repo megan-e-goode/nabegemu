@@ -40,6 +40,18 @@
 
 @if (dataLoaded)
 {
+    if (!isActivePlayer)
+    {
+        <div class="flex flex-col items-center relative z-50">
+            <div class="w-full gap-x-2 flex justify-center items-center mb-2">
+                <div class="w-5 bg-[#d991c2] animate-pulse h-5 rounded-full animate-bounce"></div>
+                <div class="w-5 animate-pulse h-5 bg-[#9869b8] rounded-full animate-bounce"></div>
+                <div class="w-5 h-5 animate-pulse bg-[#6756cc] rounded-full animate-bounce"></div>
+            </div>
+            <p>Other chefs are cooking. Waiting for your turn...</p>
+        </div>
+        <div class="w-full h-full fixed top-0 left-0 bg-white opacity-75 z-10"></div>
+    }
     <div class="flex flex-col px-2 md:px-20">
         <div data-selection-area>
             <div data-discard-area class="flex mb-2">
@@ -97,7 +109,8 @@
                 </div>
             </div>
 
-            @if (canDrawCard) {
+            @if (canDrawCard)
+            {
                 <div data-draw-area class="flex space-x-4 mb-2 justify-center">
                     <div data-draw-deck
                     class="border-2 border-black rounded-lg bg-orange-100 w-28 h-48 p-1.5 text-sm flex flex-col justify-center cursor-pointer"
@@ -115,7 +128,8 @@
             }
         </div>
 
-        @if (activeCard is not null) {
+        @if (activeCard is not null && !cardSelectionComplete)
+        {
             <div data-active-card-area class="flex space-x-4 mb-2 justify-center">
                 <FaceCard CardData="@activeCard" IsDeckModificationModeActive="false" DataAttribute="active-card" />
             </div>
@@ -125,15 +139,16 @@
         class="flex space-x-4 mb-2 justify-center border-2 border-gray-200 rounded-lg py-10 bg-slate-100">
             @foreach (var card in kitchenThings.YourHand)
             {
-                <FaceCard CardData="@card" 
-                    IsDeckModificationModeActive="@isDeckModificationModeActive" 
-                    DataAttribute="your-deck-card" 
-                    OnClickCallback="EventCallback.Factory.Create<MouseEventArgs>(this, SwapWithActiveCard)" />
+                <FaceCard CardData="@card"
+                IsDeckModificationModeActive="@isDeckModificationModeActive"
+                DataAttribute="your-deck-card"
+                OnClickCallback="EventCallback.Factory.Create<Card>(this, SwapWithActiveCard)" />
             }
         </div>
     </div>
 }
-else {
+else
+{
     <div class="flex flex-col px-2 md:px-20 items-center">
         <button class="inline-block rounded-full border-2 border-rose-500 text-rose-500 hover:border-rose-600 hover:bg-rose-400 hover:bg-opacity-10 hover:text-rose-600 focus:border-rose-700 focus:text-rose-700 active:border-rose-800 active:text-rose-800 dark:border-rose-300 dark:text-rose-300 dark:hover:hover:bg-rose-300 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal transition duration-150 ease-in-out focus:outline-none focus:ring-0"
         type="button">
@@ -152,12 +167,15 @@ else {
     private HubConnection? hubConnection;
     private KitchenThings kitchenThings;
     private int gameCode;
+    private Player sessionPlayer;
     private string playerId = string.Empty;
     private string playerName = string.Empty;
     private bool dataLoaded;
     private bool canDrawCard;
     private bool isDeckModificationModeActive;
     private Card activeCard;
+    private bool isActivePlayer;
+    private bool cardSelectionComplete;
 
     protected override async Task OnInitializedAsync()
     {
@@ -170,8 +188,10 @@ else {
             dataLoaded = true;
             kitchenThings = player.KitchenThings;
             gameCode = player.Code;
+            sessionPlayer = player;
             playerId = player.Id.ToString();
             playerName = player.Name;
+            isActivePlayer = player.IsActivePlayer;
 
             if (player.IsActivePlayer) {
                 canDrawCard = true;
@@ -188,6 +208,15 @@ else {
         hubConnection.On<bool>("SetInactivePlayerInSession", async (isActivePlayer) =>
         {
             await SessionStorage.SetAsync("IsActivePlayer", isActivePlayer);
+        });
+
+        hubConnection.On<bool>("SwapWithActiveCardComplete", async (isSuccess) =>
+        {
+
+            cardSelectionComplete = true;
+            ResetActivePlayerState();
+
+            await InvokeAsync(StateHasChanged);
         });
 
         await hubConnection.StartAsync();
@@ -231,9 +260,26 @@ else {
         }
     }
 
-    private async Task SwapWithActiveCard() 
+    private async Task SwapWithActiveCard(Card cardToSwap)
     {
-        throw new NotImplementedException();
+        if (isDeckModificationModeActive) {
+            var currentHand = sessionPlayer.KitchenThings.YourHand;
+            var cardIndex = currentHand.FindIndex(c => c.Id == cardToSwap.Id);
+            currentHand[cardIndex] = activeCard;
+
+            if (hubConnection is not null)
+            {
+                await hubConnection.SendAsync("SwapWithActiveCard", gameCode, playerId, currentHand);
+            }
+        } else {
+            await Task.CompletedTask;
+            return;
+        }        
+    }
+
+    private void ResetActivePlayerState() {
+        isDeckModificationModeActive = false;
+        canDrawCard = false;
     }
 
     public async ValueTask DisposeAsync()

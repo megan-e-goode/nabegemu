@@ -113,6 +113,31 @@ namespace nabegemu.Database
             return game.Players.First(x => x.IsActivePlayer == true);
         }
 
+        public bool SwapWithActiveCard(int gameId, Guid playerId, List<Card> newHand)
+        {
+            using var context = new GameContext();
+
+            var game = GetAllGameData(context, gameId)
+                ?? throw new Exception("Game not found");
+
+            var player = game.Players.First(x => x.Id == playerId);
+            var previousHandState = player.KitchenThings.YourHand;
+            player.KitchenThings.YourHand = newHand;
+
+            // TODO: Not actually updating db
+            context.SaveChanges();
+
+            player = game.Players.First(x => x.Id == playerId);
+            if (player.KitchenThings.YourHand != previousHandState)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         private Player CreatePlayer(int gameId, string playerName, bool activePlayer = false)
         {
             var player = new Player
@@ -150,15 +175,18 @@ namespace nabegemu.Database
         private Game? GetAllGameData(GameContext context, int gameId)
         {
             var game = context.Games
+                .AsNoTracking()
                 .First(x => x.GameId == gameId);
 
             var players = context.Players
+                .AsNoTracking()
                 .Where(x => x.Code == gameId)
                 .ToList();
 
             foreach (var player in players)
             {
                 player.KitchenThings = context.KitchenThings
+                    .AsNoTracking()
                     .Include(x => x.DrawDeckCard)
                     .Include(x => x.YourHand)
                     .Include(x => x.YourDiscard)
