@@ -9,6 +9,7 @@ namespace nabegemu.Database
             (DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseInMemoryDatabase(databaseName: "NabeGemuDb");
+            optionsBuilder.EnableSensitiveDataLogging(); // Enable sensitive data logging
         }
         
         public DbSet<Game> Games { get; set; }

@@ -12,5 +12,5 @@ public interface ILobbyHub
 
     Task SetActivePlayerInSession(int gameCode);
 
-    Task SwapWithActiveCard(int gameCode, Guid playerId, List<Card> newHand);
+    Task SwapWithActiveCard(int gameCode, Guid playerId, Card cardToSwap, Card activeCard);
 }

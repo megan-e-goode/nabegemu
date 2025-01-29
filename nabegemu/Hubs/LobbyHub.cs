@@ -59,10 +59,10 @@ public class LobbyHub : Hub, ILobbyHub
         }
     }
 
-    public async Task SwapWithActiveCard(int gameCode, Guid playerId, List<Card> newHand)
+    public async Task SwapWithActiveCard(int gameCode, Guid playerId, Card cardToSwap, Card activeCard)
     {
         var player = _gameRepository.GetPlayer(gameCode, playerId);
-        var result = _gameRepository.SwapWithActiveCard(gameCode, playerId, newHand);
+        var result = _gameRepository.SwapWithActiveCard(gameCode, playerId, cardToSwap, activeCard);
 
         if(result)
         {

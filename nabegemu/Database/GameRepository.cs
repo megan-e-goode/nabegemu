@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using nabegemu.Database.Interfaces;
 using nabegemu.Database.Models;
+using System;
+using System.Reflection.Emit;
 
 namespace nabegemu.Database
 {
@@ -113,7 +115,7 @@ namespace nabegemu.Database
             return game.Players.First(x => x.IsActivePlayer == true);
         }
 
-        public bool SwapWithActiveCard(int gameId, Guid playerId, List<Card> newHand)
+        public bool SwapWithActiveCard(int gameId, Guid playerId, Card cardToSwap, Card activeCard)
         {
             using var context = new GameContext();
 
@@ -121,21 +123,21 @@ namespace nabegemu.Database
                 ?? throw new Exception("Game not found");
 
             var player = game.Players.First(x => x.Id == playerId);
-            var previousHandState = player.KitchenThings.YourHand;
-            player.KitchenThings.YourHand = newHand;
+            
+            var newDrawDeckCard = GenerateCard(player.KitchenThings.CompleteDeck, context); // TODO: generating new card isnt available in store.
+            player.KitchenThings.DrawDeckCard = newDrawDeckCard;
+            context.Entry(player.KitchenThings.DrawDeckCard).State = EntityState.Modified;
+            context.Update(player.KitchenThings);
 
-            // TODO: Not actually updating db
+            var cardToBeSwappedInHand = player.KitchenThings.YourHand.First(x => x.Id == cardToSwap.Id);
+            var index = player.KitchenThings.YourHand.IndexOf(cardToBeSwappedInHand);
+
+            player.KitchenThings.YourHand.Remove(player.KitchenThings.YourHand[index]);
+            player.KitchenThings.YourHand.Insert(index, activeCard);
+
+            context.Update(player.KitchenThings);
             context.SaveChanges();
-
-            player = game.Players.First(x => x.Id == playerId);
-            if (player.KitchenThings.YourHand != previousHandState)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return true;
         }
 
         private Player CreatePlayer(int gameId, string playerName, bool activePlayer = false)
@@ -154,6 +156,8 @@ namespace nabegemu.Database
 
         private KitchenThings GenerateKitchenThings(Guid playerId)
         {
+            using var context = new GameContext();
+
             KitchenThings kitchenThings = new KitchenThings
             {
                 Id = Guid.NewGuid(),
@@ -167,26 +171,35 @@ namespace nabegemu.Database
                 .ToList();
             kitchenThings.YourHand = selectedCardsIndexes.Select(i => kitchenThings.CompleteDeck[i]).ToList();
 
-            kitchenThings.DrawDeckCard = kitchenThings.CompleteDeck[random.Next(0, kitchenThings.CompleteDeck.Count)];
+            kitchenThings.DrawDeckCard = GenerateCard(kitchenThings.CompleteDeck, context);
 
             return kitchenThings;
+        }
+
+        private Card GenerateCard(List<Card> completeDeck, GameContext context)
+        {
+            Random random = new Random();
+            var cardFromCompleteDeck = completeDeck[random.Next(0, completeDeck.Count)];
+
+            var card = new Card(cardFromCompleteDeck.Type, cardFromCompleteDeck.Name);
+            context.Card.Add(card);
+            context.Attach(card);
+
+            return card;
         }
 
         private Game? GetAllGameData(GameContext context, int gameId)
         {
             var game = context.Games
-                .AsNoTracking()
                 .First(x => x.GameId == gameId);
 
             var players = context.Players
-                .AsNoTracking()
                 .Where(x => x.Code == gameId)
                 .ToList();
 
             foreach (var player in players)
             {
                 player.KitchenThings = context.KitchenThings
-                    .AsNoTracking()
                     .Include(x => x.DrawDeckCard)
                     .Include(x => x.YourHand)
                     .Include(x => x.YourDiscard)

@@ -215,6 +215,7 @@ else
 
             cardSelectionComplete = true;
             ResetActivePlayerState();
+            await PrepKitchen();
 
             await InvokeAsync(StateHasChanged);
         });
@@ -263,13 +264,9 @@ else
     private async Task SwapWithActiveCard(Card cardToSwap)
     {
         if (isDeckModificationModeActive) {
-            var currentHand = sessionPlayer.KitchenThings.YourHand;
-            var cardIndex = currentHand.FindIndex(c => c.Id == cardToSwap.Id);
-            currentHand[cardIndex] = activeCard;
-
             if (hubConnection is not null)
             {
-                await hubConnection.SendAsync("SwapWithActiveCard", gameCode, playerId, currentHand);
+                await hubConnection.SendAsync("SwapWithActiveCard", gameCode, playerId, cardToSwap, activeCard);
             }
         } else {
             await Task.CompletedTask;
