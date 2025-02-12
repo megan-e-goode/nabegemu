@@ -230,14 +230,6 @@ namespace nabegemu.Database
 
                 return card;
             }
-            else if (kitchen.YourHand.FirstOrDefault(x => x.Id == cardId) is not null)
-            {
-                var card = kitchen.YourHand.First(x => x.Id == cardId);
-
-                kitchen.YourHand.Remove(kitchen.YourHand.First(x => x.Id == cardId));
-
-                return card;
-            }
 
             throw new Exception("Card not found");
         }
