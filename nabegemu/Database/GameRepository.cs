@@ -2,6 +2,7 @@
 using nabegemu.Database.Interfaces;
 using nabegemu.Database.Models;
 using System;
+using System.Numerics;
 using System.Reflection.Emit;
 
 namespace nabegemu.Database
@@ -123,20 +124,18 @@ namespace nabegemu.Database
                 ?? throw new Exception("Game not found");
 
             var player = game.Players.First(x => x.Id == playerId);
-            
-            var newDrawDeckCard = GenerateCard(player.KitchenThings.CompleteDeck, context); // TODO: generating new card isnt available in store.
-            player.KitchenThings.DrawDeckCard = newDrawDeckCard;
-            context.Entry(player.KitchenThings.DrawDeckCard).State = EntityState.Modified;
-            context.Update(player.KitchenThings);
+            var card = FindCard(activeCard.Id, player.KitchenThings, context);
 
+            // Gets the card to swap from the player's hand
             var cardToBeSwappedInHand = player.KitchenThings.YourHand.First(x => x.Id == cardToSwap.Id);
             var index = player.KitchenThings.YourHand.IndexOf(cardToBeSwappedInHand);
 
+            // Removes the card to be swapped and replaces with the new active card.
             player.KitchenThings.YourHand.Remove(player.KitchenThings.YourHand[index]);
-            player.KitchenThings.YourHand.Insert(index, activeCard);
+            player.KitchenThings.YourHand.Insert(index, card);
 
-            context.Update(player.KitchenThings);
             context.SaveChanges();
+
             return true;
         }
 
@@ -184,8 +183,63 @@ namespace nabegemu.Database
             var card = new Card(cardFromCompleteDeck.Type, cardFromCompleteDeck.Name);
             context.Card.Add(card);
             context.Attach(card);
+            context.SaveChanges();
 
             return card;
+        }
+
+        private Card FindCard(Guid cardId, KitchenThings kitchen, GameContext context)
+        {
+            if (kitchen.DrawDeckCard.Id == cardId)
+            {
+                var card = kitchen.DrawDeckCard;
+
+                kitchen.DrawDeckCard = GenerateCard(kitchen.CompleteDeck, context);
+
+                return card;
+            }
+            else if (kitchen.YourDiscard.FirstOrDefault(x => x.Id == cardId) is not null)
+            {
+                var card = kitchen.YourDiscard.First(x => x.Id == cardId);
+
+                kitchen.YourDiscard.Remove(kitchen.YourDiscard.First(x => x.Id == cardId));
+
+                return card;
+            }
+            else if (kitchen.PlayerDiscardA.FirstOrDefault(x => x.Id == cardId) is not null)
+            {
+                var card = kitchen.PlayerDiscardA.First(x => x.Id == cardId);
+
+                kitchen.PlayerDiscardA.Remove(kitchen.PlayerDiscardA.First(x => x.Id == cardId));
+
+                return card;
+            }
+            else if (kitchen.PlayerDiscardB.FirstOrDefault(x => x.Id == cardId) is not null)
+            {
+                var card = kitchen.PlayerDiscardB.First(x => x.Id == cardId);
+
+                kitchen.PlayerDiscardB.Remove(kitchen.PlayerDiscardB.First(x => x.Id == cardId));
+
+                return card;
+            }
+            else if (kitchen.PlayerDiscardC.FirstOrDefault(x => x.Id == cardId) is not null)
+            {
+                var card = kitchen.PlayerDiscardC.First(x => x.Id == cardId);
+
+                kitchen.PlayerDiscardC.Remove(kitchen.PlayerDiscardC.First(x => x.Id == cardId));
+
+                return card;
+            }
+            else if (kitchen.YourHand.FirstOrDefault(x => x.Id == cardId) is not null)
+            {
+                var card = kitchen.YourHand.First(x => x.Id == cardId);
+
+                kitchen.YourHand.Remove(kitchen.YourHand.First(x => x.Id == cardId));
+
+                return card;
+            }
+
+            throw new Exception("Card not found");
         }
 
         private Game? GetAllGameData(GameContext context, int gameId)

@@ -140,9 +140,9 @@
             @foreach (var card in kitchenThings.YourHand)
             {
                 <FaceCard CardData="@card"
-                IsDeckModificationModeActive="@isDeckModificationModeActive"
-                DataAttribute="your-deck-card"
-                OnClickCallback="EventCallback.Factory.Create<Card>(this, SwapWithActiveCard)" />
+                          IsDeckModificationModeActive="@isDeckModificationModeActive"
+                          DataAttribute="your-deck-card"
+                          OnClickCallback="EventCallback.Factory.Create<Card>(this, SwapWithActiveCard)" />
             }
         </div>
     </div>

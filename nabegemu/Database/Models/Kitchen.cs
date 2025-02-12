@@ -10,8 +10,6 @@ namespace nabegemu.Database.Models
 
         public Guid AssociatedPlayerId { get; set; }
 
-        public Card ActiveCard { get; set; }
-
         public Card DrawDeckCard { get; set; }
 
         public List<Card> YourHand { get; set; } = [];
