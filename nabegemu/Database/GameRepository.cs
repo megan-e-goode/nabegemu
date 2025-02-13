@@ -116,7 +116,7 @@ namespace nabegemu.Database
             return game.Players.First(x => x.IsActivePlayer == true);
         }
 
-        public bool SwapWithActiveCard(int gameId, Guid playerId, Card cardToSwap, Card activeCard)
+        public Player SwapWithActiveCard(int gameId, Guid playerId, Card cardToSwap, Card activeCard)
         {
             using var context = new GameContext();
 
@@ -136,7 +136,7 @@ namespace nabegemu.Database
 
             context.SaveChanges();
 
-            return true;
+            return player;
         }
 
         private Player CreatePlayer(int gameId, string playerName, bool activePlayer = false)

@@ -64,13 +64,6 @@ public class LobbyHub : Hub, ILobbyHub
         var player = _gameRepository.GetPlayer(gameCode, playerId);
         var result = _gameRepository.SwapWithActiveCard(gameCode, playerId, cardToSwap, activeCard);
 
-        if(result)
-        {
-            await Clients.Caller.SendAsync("SwapWithActiveCardComplete", result);
-        }
-        else
-        {
-            throw new Exception($"Failed to swap cards on player: {player.Name}");
-        }
+        await Clients.Caller.SendAsync("SwapWithActiveCardComplete", result);
     }
 }

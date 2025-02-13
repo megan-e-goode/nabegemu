@@ -210,12 +210,18 @@ else
             await SessionStorage.SetAsync("IsActivePlayer", isActivePlayer);
         });
 
-        hubConnection.On<bool>("SwapWithActiveCardComplete", async (isSuccess) =>
+        hubConnection.On<Player>("SwapWithActiveCardComplete", async (player) =>
         {
 
             cardSelectionComplete = true;
-            ResetActivePlayerState();
-            await PrepKitchen();
+            kitchenThings = player.KitchenThings;
+            gameCode = player.Code;
+            sessionPlayer = player;
+            playerId = player.Id.ToString();
+            playerName = player.Name;
+            isActivePlayer = player.IsActivePlayer;
+            isDeckModificationModeActive = false;
+            canDrawCard = false;
 
             await InvokeAsync(StateHasChanged);
         });
@@ -272,11 +278,6 @@ else
             await Task.CompletedTask;
             return;
         }        
-    }
-
-    private void ResetActivePlayerState() {
-        isDeckModificationModeActive = false;
-        canDrawCard = false;
     }
 
     public async ValueTask DisposeAsync()
