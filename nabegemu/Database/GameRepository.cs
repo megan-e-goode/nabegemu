@@ -96,26 +96,6 @@ namespace nabegemu.Database
             return game.Players.First(x => x.IsActivePlayer == true);
         }
 
-        public Player SetNextActivePlayer(int gameId)
-        {
-            using var context = new GameContext();
-
-            var game = GetAllGameData(context, gameId)
-                ?? throw new Exception("Game not found");
-
-            var currentActivePlayer = game.Players.First(x => x.IsActivePlayer == true);
-            var currentActivePlayerIndex = game.Players.IndexOf(currentActivePlayer);            
-
-            currentActivePlayer.IsActivePlayer = false;
-
-            var nextActivePlayerIndex = (currentActivePlayerIndex + 1) % game.Players.Count;
-            game.Players[nextActivePlayerIndex].IsActivePlayer = true;
-
-            context.SaveChanges();
-
-            return game.Players.First(x => x.IsActivePlayer == true);
-        }
-
         public Player SwapWithActiveCard(int gameId, Guid playerId, Card cardToSwap, Card activeCard)
         {
             using var context = new GameContext();
@@ -134,9 +114,22 @@ namespace nabegemu.Database
             player.KitchenThings.YourHand.Remove(player.KitchenThings.YourHand[index]);
             player.KitchenThings.YourHand.Insert(index, card);
 
+            SetNextActivePlayer(game);
+
             context.SaveChanges();
 
             return player;
+        }
+
+        private void SetNextActivePlayer(Game game)
+        {
+            var currentActivePlayer = game.Players.First(x => x.IsActivePlayer == true);
+            var currentActivePlayerIndex = game.Players.IndexOf(currentActivePlayer);
+
+            currentActivePlayer.IsActivePlayer = false;
+
+            var nextActivePlayerIndex = (currentActivePlayerIndex + 1) % game.Players.Count;
+            game.Players[nextActivePlayerIndex].IsActivePlayer = true;
         }
 
         private Player CreatePlayer(int gameId, string playerName, bool activePlayer = false)

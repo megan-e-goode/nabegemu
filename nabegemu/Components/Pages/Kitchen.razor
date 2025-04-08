@@ -224,6 +224,8 @@ else
             canDrawCard = false;
 
             await InvokeAsync(StateHasChanged);
+
+            // await PrepKitchen();
         });
 
         await hubConnection.StartAsync();
