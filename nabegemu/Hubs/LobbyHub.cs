@@ -5,10 +5,12 @@ namespace nabegemu.Hubs;
 public class LobbyHub : Hub, ILobbyHub
 {
     readonly IGameRepository _gameRepository;
+    readonly ILogger<LobbyHub> _logger;
 
-    public LobbyHub(IGameRepository gameRepository)
+    public LobbyHub(IGameRepository gameRepository, ILogger<LobbyHub> logger)
     {
         _gameRepository = gameRepository;
+        _logger = logger;
     }
 
     public async Task AddNewPlayer(string playerName, string gameCode)
@@ -46,6 +48,7 @@ public class LobbyHub : Hub, ILobbyHub
         await Clients.Caller.SendAsync("PrepKitchenComplete", player);
     }
 
+    // TODO: Remove if not needed?
     public async Task SetActivePlayerInSession(int gameCode)
     {
         var activePlayer = _gameRepository.GetActivePlayer(gameCode);
@@ -61,9 +64,11 @@ public class LobbyHub : Hub, ILobbyHub
 
     public async Task SwapWithActiveCard(int gameCode, Guid playerId, Card cardToSwap, Card activeCard)
     {
-        var player = _gameRepository.GetPlayer(gameCode, playerId);
+        var game = _gameRepository.GetGame(gameCode);
+        var player = game.Players.First(x => x.Id == playerId);
         var result = _gameRepository.SwapWithActiveCard(gameCode, playerId, cardToSwap, activeCard);
 
         await Clients.Caller.SendAsync("SwapWithActiveCardComplete", result);
+        await Clients.All.SendAsync("ResetKitchen");
     }
 }

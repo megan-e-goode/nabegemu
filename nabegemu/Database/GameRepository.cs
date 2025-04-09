@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using nabegemu.Database.Interfaces;
 using nabegemu.Database.Models;
-using System;
-using System.Numerics;
-using System.Reflection.Emit;
 
 namespace nabegemu.Database
 {
@@ -238,14 +235,28 @@ namespace nabegemu.Database
 
             foreach (var player in players)
             {
-                player.KitchenThings = context.KitchenThings
+                var drawDeckCard = context.KitchenThings
                     .Include(x => x.DrawDeckCard)
+                    .FirstOrDefault(x => x.AssociatedPlayerId == player.Id)?.DrawDeckCard;
+
+                if(drawDeckCard is null)
+                {
+                    var completedDeck = context.KitchenThings
+                        .Include(x => x.CompleteDeck)
+                        .First(x => x.AssociatedPlayerId == player.Id).CompleteDeck;
+
+                    drawDeckCard = GenerateCard(completedDeck, context);
+                }
+
+                player.KitchenThings = context.KitchenThings
                     .Include(x => x.YourHand)
                     .Include(x => x.YourDiscard)
                     .Include(x => x.PlayerDiscardA)
                     .Include(x => x.PlayerDiscardB)
                     .Include(x => x.PlayerDiscardC)
                     .First(x => x.AssociatedPlayerId == player.Id);
+
+                player.KitchenThings.DrawDeckCard = drawDeckCard;
             }
 
             Game fullGameData = new Game

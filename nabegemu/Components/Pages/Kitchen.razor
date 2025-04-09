@@ -183,6 +183,11 @@ else
         .WithUrl(Navigation.ToAbsoluteUri("/lobbyhub"))
         .Build();
 
+        hubConnection.On("ResetKitchen", async () =>
+        {
+            await PrepKitchen();
+        });
+
         hubConnection.On<Player>("PrepKitchenComplete", async (player) =>
         {
             dataLoaded = true;
@@ -196,6 +201,8 @@ else
             if (player.IsActivePlayer) {
                 canDrawCard = true;
             }
+
+            await SessionStorage.SetAsync("IsActivePlayer", player.IsActivePlayer);
 
             await InvokeAsync(StateHasChanged);
         });
@@ -224,8 +231,6 @@ else
             canDrawCard = false;
 
             await InvokeAsync(StateHasChanged);
-
-            // await PrepKitchen();
         });
 
         await hubConnection.StartAsync();
@@ -256,11 +261,12 @@ else
             gameCode = sessionGameCode.Value;
             playerId = sessionPlayerId.Value.ToString();
 
-            await SetActivePlayer();
+            await SetActivePlayer(); // TODO: Remove if not needed?
             await PrepKitchen();
         }
     }
 
+    // TODO: Remove if not needed?
     private async Task SetActivePlayer()
     {
         if (hubConnection is not null)
